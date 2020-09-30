@@ -3,6 +3,8 @@
 
 using namespace std;
 
+//Primera practica
+void analisisEthernet(int bytesCont, unsigned char dato);
 void imprimir(int, int, string, int, unsigned char);
 void tipoDeCodigo(unsigned char, int);
 
@@ -17,15 +19,18 @@ int main()
     else
         while(!feof(archivo)){
             fread(&dato, sizeof(unsigned char), 1, archivo);
-
-            imprimir(1, 6, "Direccion de origen: ", bytesCont, dato);
-            imprimir(7, 12, "Direccion de destino: ", bytesCont, dato);
-            imprimir(13, 14, "Tipo: ", bytesCont, dato);
-            imprimir(15, 1517, "Datos: ",bytesCont, dato);
+            analisisEthernet(bytesCont, dato);
             bytesCont++;
         }
     fclose (archivo);
     return (0);
+}
+
+void analisisEthernet(int bytesCont, unsigned char dato){
+    imprimir(1, 6, "Direccion de origen: ", bytesCont, dato);
+    imprimir(7, 12, "Direccion de destino: ", bytesCont, dato);
+    imprimir(13, 14, "Tipo: ", bytesCont, dato);
+    imprimir(15, 1517, "Datos: ",bytesCont, dato);
 }
 
 void imprimir(int min, int max, string campo, int bytesCont, unsigned char dato){
@@ -45,7 +50,8 @@ void imprimir(int min, int max, string campo, int bytesCont, unsigned char dato)
 }
 
 void tipoDeCodigo(unsigned char dato, int bytesCont){
-    int idato += dato;
+    int idato = 0;
+    idato += dato;
 
     switch(bytesCont){
         case 8:
