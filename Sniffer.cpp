@@ -12,6 +12,7 @@ void tipoDeCodigo(unsigned char, int);
 
 //Segunda practica
 void tipoServicio(unsigned char[], int);
+void identificador(unsigned char[], int);
 
 int main()
 {
@@ -38,6 +39,7 @@ int main()
         }
         for(i = 0; i < TAM; i++){
             if(i == 8) tipoServicio(bits, i);
+            if(i == 16) identificador(bits, i);
         }
     }
 
@@ -144,4 +146,13 @@ void tipoServicio(unsigned char dato[], int cont){
     cout << "Fiabilidad: " << x << endl;
 
     cont += 2; //porque los ultimos dos bits no se usan
+}
+
+void identificador(unsigned char dato[], int cont){
+    cout << "Identificador: ";
+    int limite = cont + 16;
+    while(cont < limite){
+        printf("%02X ", dato[cont] & 0xFF);
+        cont++;
+    }
 }
