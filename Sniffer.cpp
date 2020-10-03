@@ -1,6 +1,8 @@
 #include <iostream>
 #include <stdio.h>
 
+#define TAM 81
+
 using namespace std;
 
 //Primera practica
@@ -8,13 +10,18 @@ void analisisEthernet(int bytesCont, unsigned char dato);
 void imprimir(int, int, string, int, unsigned char);
 void tipoDeCodigo(unsigned char, int);
 
+//Segunda practica
+void tipoServicio(unsigned char[], int);
+
 int main()
 {
-    FILE *archivo = fopen("ethernet_3.bin", "rb");
+    FILE *archivo = fopen("ethernet_ipv4_icmp_ping.bin", "rb");//fopen("ethernet_3.bin", "rb");
     unsigned char dato;
     int bytesCont = 1;
+    int i;
+    unsigned char bits[TAM];
 
-    if(archivo == NULL)
+    /*if(archivo == NULL)
        printf ("Error en la apertura. Es posible que el fichero no exista.\n");
     else
         while(!feof(archivo)){
@@ -22,7 +29,18 @@ int main()
             analisisEthernet(bytesCont, dato);
             bytesCont++;
         }
-    fclose (archivo);
+    fclose (archivo);*/
+
+    if(archivo == NULL) printf("Error\n");
+    else{
+        for(i = 0; i < TAM; i++){
+            bits[i] = getc(archivo);
+        }
+        for(i = 0; i < TAM; i++){
+            if(i == 8) tipoServicio(bits, i);
+        }
+    }
+
     return (0);
 }
 
@@ -67,4 +85,63 @@ void tipoDeCodigo(unsigned char dato, int bytesCont){
             printf("-> IPv6 ");
 
     }
+}
+
+void tipoServicio(unsigned char dato[], int cont){
+    short potencia[3] = {4, 2, 1};
+    int serv = 0;
+    int c, i;
+    string x;
+
+    for(i = 0; i < 3; i++){
+        c = dato[i + cont] - '0';
+        serv += c * potencia[i];
+    }
+
+    cout << "Tipo de servicio" << endl;
+    cout << "Prioridad: " << serv << " ";
+
+    switch(serv){
+        case 0:
+            cout << "De rutina";
+            break;
+        case 1:
+            cout << "Prioritario";
+            break;
+        case 2:
+            cout << "Inmediato";
+            break;
+        case 3:
+            cout << "Relampago";
+            break;
+        case 4:
+            cout << "Invalidacion relampago";
+            break;
+        case 5:
+            cout << "Procesando llamada critica";
+            break;
+        case 6:
+            cout << "Control de trabajo de Internet";
+            break;
+        case 7:
+            cout << "Control de red";
+    }
+    cout << endl;
+
+    cont += 3;
+    c = dato[cont] - '0';
+    x = (c == 0) ? "normal" : "bajo";
+    cout << "Retardo: " << x << endl;
+
+    cont++;
+    c = dato[cont] - '0';
+    x = (c == 0) ? "normal" : "bajo";
+    cout << "Rendimiento: " << x << endl;
+
+    cont++;
+    c = dato[cont] - '0';
+    x = (c == 0) ? "normal" : "bajo";
+    cout << "Fiabilidad: " << x << endl;
+
+    cont += 2; //porque los ultimos dos bits no se usan
 }
