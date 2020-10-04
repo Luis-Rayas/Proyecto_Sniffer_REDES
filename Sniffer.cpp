@@ -156,3 +156,21 @@ void identificador(unsigned char dato[], int cont){
         cont++;
     }
 }
+
+void BtoD(string numero, int tam)
+{
+    int potencia[13] = {4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1}, i, x, decimal[tam], total = 0;
+    char temp[2];
+    for (i = 0; numero[i] != '\0'; i++)
+        ;
+    int limite = i;
+    i--;
+    for (x = 0; x < limite; x++, i--)
+    {
+        temp[0] = numero[i];
+        decimal[x] = atoi(temp);
+        decimal[x] *= potencia[x];
+        total += decimal[x];
+    }
+    printf("%d", total);
+}
