@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-    FILE *archivo = fopen("ethernet_ipv4_icmp.bin", "rb");//fopen("ethernet_3.bin", "rb");
+    FILE *archivo = fopen("PaquetesRedes/ethernet_ipv4_tcp.bin", "rb");//fopen("ethernet_3.bin", "rb");
     unsigned char dato;
 
     int ParteTrama = 0;
@@ -26,8 +26,6 @@ int main()
 
     t.ethernet();
     t.ipv4();
-
-
 
 
     return 0;

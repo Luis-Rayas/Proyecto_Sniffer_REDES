@@ -2,7 +2,7 @@
 
 using namespace std;
 
-//Funcion para convertir un caracter a bits
+//Funcion para convertir un caracter a bits (y lo entrega en forma de string)
 string Conversiones::convert(char n,int minimo,int maximo) {
 
     string arreglo;
@@ -22,7 +22,6 @@ int Conversiones::binario_decimal(string car){
   int potenciaPos = 8 - car.size();
 
   for(int i= 0 ; i< car.size() ; i++){
-
           auxI2 =  car[i] - '0';
           auxI1 += auxI2 * potencia[potenciaPos];
           potenciaPos++;

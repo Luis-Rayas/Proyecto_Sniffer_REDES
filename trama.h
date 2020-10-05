@@ -34,6 +34,13 @@ class Trama{
         void version_tamanio();
         void tipodeServio();
 
+        int longitudTotal();
+        int identificador();
+        void flags();
+        int posicionFragmento();
+        int tiempoVida();
+        void protocolo();
+
 
 };
 
