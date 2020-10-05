@@ -1,0 +1,205 @@
+# depslib dependency file v1.0
+1537371625 source:c:\users\paulo\desktop\sniffer\main.cpp
+	<iostream>
+	<winsock2.h>
+	<stdio.h>
+	<windows.h>
+	<ws2tcpip.h>
+	<time.h>
+	<string.h>
+	<fstream>
+	"ip.h"
+	"tcp.h"
+	"ethernet.h"
+
+1537329878 c:\users\paulo\desktop\sniffer\ip.h
+
+1537239681 c:\users\paulo\desktop\sniffer\tcp.h
+
+1537327007 c:\users\paulo\desktop\sniffer\ethernet.h
+
+1538535664 source:c:\users\paulo\desktop\snifferv2\main.cpp
+	<iostream>
+	<winsock2.h>
+	<stdio.h>
+	<windows.h>
+	<ws2tcpip.h>
+	<time.h>
+	<string.h>
+	<fstream>
+	"ip.h"
+	"tcp.h"
+	"ethernet.h"
+	"hextodec.h"
+	"binaryFunctions.h"
+
+1537329878 c:\users\paulo\desktop\snifferv2\ip.h
+
+1537239681 c:\users\paulo\desktop\snifferv2\tcp.h
+
+1537327007 c:\users\paulo\desktop\snifferv2\ethernet.h
+
+1537836703 c:\users\paulo\desktop\snifferv2\hextodec.h
+
+1538535750 c:\users\paulo\desktop\snifferv2\binaryfunctions.h
+
+1539376045 source:c:\users\paulo\desktop\snifferv4\main.cpp
+	<iostream>
+	<winsock2.h>
+	<stdio.h>
+	<windows.h>
+	<ws2tcpip.h>
+	<time.h>
+	<string.h>
+	<fstream>
+	"ip.h"
+	"tcp.h"
+	"ethernet.h"
+	"hextodec.h"
+	"binaryFunctions.h"
+
+1537329878 c:\users\paulo\desktop\snifferv4\ip.h
+
+1537239681 c:\users\paulo\desktop\snifferv4\tcp.h
+
+1537327007 c:\users\paulo\desktop\snifferv4\ethernet.h
+
+1537836703 c:\users\paulo\desktop\snifferv4\hextodec.h
+
+1539370934 c:\users\paulo\desktop\snifferv4\binaryfunctions.h
+
+1540949335 source:c:\users\paulo\desktop\snifferv5\main.cpp
+	<iostream>
+	<winsock2.h>
+	<stdio.h>
+	<windows.h>
+	<ws2tcpip.h>
+	<time.h>
+	<stdlib.h>
+	<string.h>
+	<fstream>
+	"pcap.h"
+	"ip.h"
+	"tcp.h"
+	"ethernet.h"
+	"hextodec.h"
+	"binaryFunctions.h"
+
+1537326278 c:\users\paulo\desktop\snifferv5\ip.h
+
+1537236081 c:\users\paulo\desktop\snifferv5\tcp.h
+
+1537323407 c:\users\paulo\desktop\snifferv5\ethernet.h
+
+1537833103 c:\users\paulo\desktop\snifferv5\hextodec.h
+
+1540867515 c:\users\paulo\desktop\snifferv5\binaryfunctions.h
+
+1541817730 source:c:\users\paulo\desktop\snifferv6\main.cpp
+	<iostream>
+	<winsock2.h>
+	<stdio.h>
+	<windows.h>
+	<ws2tcpip.h>
+	<time.h>
+	<stdlib.h>
+	<string.h>
+	<fstream>
+	"pcap.h"
+	"ip.h"
+	"tcp.h"
+	"ethernet.h"
+	"hextodec.h"
+	"binaryFunctions.h"
+
+1537326278 c:\users\paulo\desktop\snifferv6\ip.h
+
+1537236081 c:\users\paulo\desktop\snifferv6\tcp.h
+
+1537323407 c:\users\paulo\desktop\snifferv6\ethernet.h
+
+1537833103 c:\users\paulo\desktop\snifferv6\hextodec.h
+
+1540867515 c:\users\paulo\desktop\snifferv6\binaryfunctions.h
+
+1542664773 source:c:\users\paulo\desktop\snifferv7\main.cpp
+	<iostream>
+	<winsock2.h>
+	<stdio.h>
+	<windows.h>
+	<ws2tcpip.h>
+	<time.h>
+	<stdlib.h>
+	<string.h>
+	<fstream>
+	"pcap.h"
+	"ip.h"
+	"tcp.h"
+	"ethernet.h"
+	"hextodec.h"
+	"binaryFunctions.h"
+
+1537326278 c:\users\paulo\desktop\snifferv7\ip.h
+
+1537236081 c:\users\paulo\desktop\snifferv7\tcp.h
+
+1537323407 c:\users\paulo\desktop\snifferv7\ethernet.h
+
+1537833103 c:\users\paulo\desktop\snifferv7\hextodec.h
+
+1540867515 c:\users\paulo\desktop\snifferv7\binaryfunctions.h
+
+1542760444 source:c:\users\paulo\desktop\snifferv8\main.cpp
+	<iostream>
+	<winsock2.h>
+	<stdio.h>
+	<windows.h>
+	<ws2tcpip.h>
+	<time.h>
+	<stdlib.h>
+	<string.h>
+	<fstream>
+	"pcap.h"
+	"ip.h"
+	"tcp.h"
+	"ethernet.h"
+	"hextodec.h"
+	"binaryFunctions.h"
+
+1537326278 c:\users\paulo\desktop\snifferv8\ip.h
+
+1537236081 c:\users\paulo\desktop\snifferv8\tcp.h
+
+1537323407 c:\users\paulo\desktop\snifferv8\ethernet.h
+
+1537833103 c:\users\paulo\desktop\snifferv8\hextodec.h
+
+1540867515 c:\users\paulo\desktop\snifferv8\binaryfunctions.h
+
+1543692534 source:c:\users\paulo\desktop\snifferv9\main.cpp
+	<iostream>
+	<winsock2.h>
+	<stdio.h>
+	<windows.h>
+	<ws2tcpip.h>
+	<time.h>
+	<stdlib.h>
+	<string.h>
+	<fstream>
+	"pcap.h"
+	"ip.h"
+	"tcp.h"
+	"ethernet.h"
+	"hextodec.h"
+	"binaryFunctions.h"
+
+1537326278 c:\users\paulo\desktop\snifferv9\ip.h
+
+1537236081 c:\users\paulo\desktop\snifferv9\tcp.h
+
+1537323407 c:\users\paulo\desktop\snifferv9\ethernet.h
+
+1537833103 c:\users\paulo\desktop\snifferv9\hextodec.h
+
+1540867515 c:\users\paulo\desktop\snifferv9\binaryfunctions.h
+
