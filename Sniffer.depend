@@ -1,0 +1,20 @@
+# depslib dependency file v1.0
+1601922799 source:d:\luis\documents\git\proyectosniffer\conversiones.cpp
+	"conversiones.h"
+
+1601911921 d:\luis\documents\git\proyectosniffer\conversiones.h
+	<iostream>
+	<string>
+
+1601931541 source:d:\luis\documents\git\proyectosniffer\main.cpp
+	<iostream>
+	"trama.h"
+
+1601930503 d:\luis\documents\git\proyectosniffer\trama.h
+	<iostream>
+	<string>
+	"conversiones.h"
+
+1601932139 source:d:\luis\documents\git\proyectosniffer\trama.cpp
+	"trama.h"
+

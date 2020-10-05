@@ -1,5 +1,2 @@
 *.exe
 PaquetesRedes/
-*.cbp
-*.depend
-obj/
