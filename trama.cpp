@@ -15,6 +15,9 @@ Arreglo de bytes(orden)
 20 - 21 Posicion de Fragmento de la trama (13 bits)
 22 - Tiempo de vida
 23 - Protocolo
+24 - 25 Checksum
+26 - 29 IP origen
+30 - 33 IP destino
 */
 
 Trama::Trama(){
@@ -63,6 +66,7 @@ void Trama::tipoDeCodigoEthernet(){
         switch(auxI1){
             case 8:
                 printf("-> IPv4 ");
+                ipv4();
                 break;
             case 14:
                 printf("-> ARP ");
@@ -85,7 +89,9 @@ void Trama::ipv4(){
     cout << "Posicion del fragmento: " << posicionFragmento() << endl;
     cout << "Tiempo de vida: " << tiempoVida() << endl;
     protocolo();
-
+    checksum();
+    IPorigen();
+    IPdestino();
 }
 
 void Trama::version_tamanio(){
@@ -166,12 +172,12 @@ int Trama::longitudTotal(){
     auxS1 = bytes[16] + bytes[17];
     auxS2 = c.convert2(auxS1, 0, 15);
     auxI1 = c.binario_decimal(auxS2);
-    return auxI1;   
+    return auxI1;
 }
 
 void Trama::flags(){
-    cout << "Flags" << endl;
-    auxS1 = c.convert(bytes[20], 0, 2);
+    auxS1 = c.convert(bytes[20], 5, 7);
+    cout << "Flags " << "( " << auxS1 << " ) "<< endl;
     auxI1 = auxS1[1] - '0';
     cout << "    " << "Bit reservado: " << auxS1[0] - '0' << endl;
     if(auxI1 == 0){
@@ -181,16 +187,17 @@ void Trama::flags(){
     }
     auxI1 = auxS1[2] - '0';
     if(auxI1 == 0){
-        cout << "    " << "Ultimo fragmento: " << auxS1[1] - '0' << endl;
+        cout << "    " << "Ultimo fragmento: " << auxS1[2] - '0' << endl;
     } else {
-        cout << "    " << "Fragmento intermedio: " << auxS1[1] - '0' << endl;
+        cout << "    " << "Fragmento intermedio: " << auxS1[2] - '0' << endl;
     }
 }
 
 int Trama::posicionFragmento(){
-    auxS1 = c.convert(bytes[20], 3, 7);
-    auxS2 = c.convert(bytes[21], 0, 7);
-    auxI1 = c.binario_decimal(auxS1) + c.binario_decimal(auxS2);
+    //auxS1 = c.convert(bytes[20], 4, 0);
+    auxS1 = c.convert(bytes[20], 4, 0) + c.convert(bytes[21], 0, 7);;
+    //auxS2 = c.convert(bytes[21], 0, 7);
+    auxI1 = c.binario_decimal(auxS1);
     return auxI1;
 }
 
@@ -223,5 +230,69 @@ void Trama::protocolo(){
     case 121:
         cout << auxI1 << ". SMP" << endl;
         break;
+    }
+}
+
+void Trama::checksum(){
+    auxS1 = c.convert(bytes[24], 0, 7) + c.convert(bytes[25], 0 ,7);
+    printf("Checksum: %02X:%02X \n", bytes[24] & 0xFF, bytes[25] & 0xFF);
+}
+
+void Trama::IPorigen(){
+    int direccionOrigen[4];
+    auxS1 = c.convert(bytes[26], 0, 7);
+    direccionOrigen[0] = c.binario_decimal(auxS1);
+
+    auxS1 = c.convert(bytes[27], 0, 7);
+    direccionOrigen[1] = c.binario_decimal(auxS1);
+
+    auxS1 = c.convert(bytes[28], 0, 7);
+    direccionOrigen[2] = c.binario_decimal(auxS1);
+
+    auxS1 = c.convert(bytes[29], 0, 7);
+    direccionOrigen[3] = c.binario_decimal(auxS1);
+
+    cout << "Direccion Origen: " << direccionOrigen[0] << "." << direccionOrigen[1] << "." << direccionOrigen[2]<< "." << direccionOrigen[3] << endl;
+}
+void Trama::IPdestino(){
+    int direccionDestino[4];
+    auxS1 = c.convert(bytes[30], 0, 7);
+    direccionDestino[0] = c.binario_decimal(auxS1);
+
+    auxS1 = c.convert(bytes[31], 0, 7);
+    direccionDestino[1] = c.binario_decimal(auxS1);
+
+    auxS1 = c.convert(bytes[32], 0, 7);
+    direccionDestino[2] = c.binario_decimal(auxS1);
+
+    auxS1 = c.convert(bytes[33], 0, 7);
+    direccionDestino[3] = c.binario_decimal(auxS1);
+
+    cout << "Direccion Destino: " << direccionDestino[0] << "." << direccionDestino[1] << "." << direccionDestino[2]<< "." << direccionDestino[3] << endl;
+}
+
+/*void Trama::opcionesIP(){ ------------ pendiente a hacer desmadres
+    cout << "Opciones IP" << endl;
+    //for (int i = 1; i <= 40; i++){
+
+    //}
+    auxS1 = c.convert(bytes[34], 0, 1);
+    cout << "Flag Copy" << endl;
+    if(auxS1 == "0"){
+        cout << "No es copia de un datagrama" << endl;
+    } else {
+        cout << "Es copia de un datagrama fragmentado" << endl;
+    }
+    auxS2 = c.convert(bytes[34], 4, 5);
+    auxI1 = c.binario_decimal(auxS2);
+    cout << auxI1;
+}*/
+
+void Trama::imprimirResto(){
+    cout << "Datos: ";
+    for (int i = 35; i < sizeof(bytes); i++){
+        printf("%02X  ", bytes[i] & 0xFF);
+        if((i%10) == 0 )
+            cout << endl;
     }
 }

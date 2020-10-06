@@ -1,2 +1,6 @@
 *.exe
+*.depend
+*.cbp
 PaquetesRedes/
+obj/
+bin/

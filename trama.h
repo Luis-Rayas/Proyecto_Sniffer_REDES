@@ -40,7 +40,12 @@ class Trama{
         int posicionFragmento();
         int tiempoVida();
         void protocolo();
+        void checksum();
+        void IPorigen();
+        void IPdestino();
+        void opcionesIP();
 
+        void imprimirResto();
 
 };
 
