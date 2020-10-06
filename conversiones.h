@@ -15,6 +15,7 @@ class Conversiones{
 
         //
         std::string convert(char,int,int);
+        std::string convert2(std::string,int,int);
         int binario_decimal(std::string);
 
 

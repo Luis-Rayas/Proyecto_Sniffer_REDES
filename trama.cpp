@@ -7,7 +7,7 @@ Arreglo de bytes(orden)
 0 - 5 Direccion Origen
 6 - 12 Direccion Destino
 13 Tipo de protocolo
-14 Version de protocolo y tamaño de cabecera
+14 Version de protocolo y tamaï¿½o de cabecera
 15 Tipo de servicio
 16 - 17 Longitud total
 18 - 19 Identificador
@@ -79,13 +79,7 @@ void Trama::tipoDeCodigoEthernet(){
 void Trama::ipv4(){
     version_tamanio();
     tipodeServio();
-
-    auxI1 = 0;
-    auxS1 = c.convert(bytes[16],0,7);
-    auxS2 = c.convert(bytes[17],0,7);
-    auxI1 += c.binario_decimal(auxS1);
-    auxI1 += c.binario_decimal(auxS2);
-    cout<<"Longitud total: "<<auxI1<<" bytes" << endl;
+    cout<<"Longitud total: "<<longitudTotal()<<" bytes" << endl;
     cout << "Identificador: " << identificador() << endl;
     flags();
     cout << "Posicion del fragmento: " << posicionFragmento() << endl;
@@ -168,12 +162,11 @@ int Trama::identificador(){
 }
 
 int Trama::longitudTotal(){
-    auxS1 = c.convert(bytes[16], 0, 7);
-    auxS2 = c.convert(bytes[17], 0, 7);
-    auxI1 = c.binario_decimal(auxS1);
-    auxI2 = c.binario_decimal(auxS2);
-    int longTotal = auxI1 + auxI2;
-    return longTotal;
+    auxI1 = 0;
+    auxS1 = bytes[16] + bytes[17];
+    auxS2 = c.convert2(auxS1, 0, 15);
+    auxI1 = c.binario_decimal(auxS2);
+    return auxI1;   
 }
 
 void Trama::flags(){
