@@ -18,6 +18,9 @@ Arreglo de bytes(orden)
 24 - 25 Checksum
 26 - 29 IP origen
 30 - 33 IP destino
+34 Tipo de mensaje informativo ICMPv4
+35 Codigo de Error
+36 - 37 Checksum ICMPv4
 */
 
 Trama::Trama(){
@@ -89,7 +92,7 @@ void Trama::ipv4(){
     cout << "Posicion del fragmento: " << posicionFragmento() << endl;
     cout << "Tiempo de vida: " << tiempoVida() << endl;
     protocolo();
-    checksum();
+    checksum(24, "IPv4");
     IPorigen();
     IPdestino();
 }
@@ -214,6 +217,7 @@ void Trama::protocolo(){
     switch(auxI1){
     case 1:
         cout << auxI1 << ". ICMP v4" << endl;
+        ICMPv4();
         break;
     case 6:
         cout << auxI1 << ". TCP" << endl;
@@ -233,9 +237,9 @@ void Trama::protocolo(){
     }
 }
 
-void Trama::checksum(){
-    auxS1 = c.convert(bytes[24], 0, 7) + c.convert(bytes[25], 0 ,7);
-    printf("Checksum: %02X:%02X \n", bytes[24] & 0xFF, bytes[25] & 0xFF);
+void Trama::checksum(int noByte, string tipoDeChecksum){
+    auxS1 = c.convert(bytes[noByte], 0, 7) + c.convert(bytes[noByte + 1], 0 ,7);
+    printf("Checksum de %s: %02X:%02X \n",tipoDeChecksum.c_str(), bytes[noByte] & 0xFF, bytes[noByte + 1] & 0xFF);
 }
 
 void Trama::IPorigen(){
@@ -271,26 +275,119 @@ void Trama::IPdestino(){
     cout << "Direccion Destino: " << direccionDestino[0] << "." << direccionDestino[1] << "." << direccionDestino[2]<< "." << direccionDestino[3] << endl;
 }
 
-/*void Trama::opcionesIP(){ ------------ pendiente a hacer desmadres
-    cout << "Opciones IP" << endl;
-    //for (int i = 1; i <= 40; i++){
+void Trama::ICMPv4() 
+{
+    cout << "ICMPv4: " << endl;
+    tipoMensajeInformativoICMPv4();
+    codigoErrorICMPv4();
+    checksum(36, "ICMPv4");
+}
 
-    //}
-    auxS1 = c.convert(bytes[34], 0, 1);
-    cout << "Flag Copy" << endl;
-    if(auxS1 == "0"){
-        cout << "No es copia de un datagrama" << endl;
-    } else {
-        cout << "Es copia de un datagrama fragmentado" << endl;
+void Trama::tipoMensajeInformativoICMPv4() 
+{
+    auxS1 = c.convert(bytes[34], 0, 7);
+    auxI1 = c.binario_decimal(auxS1);
+    switch (auxI1)
+    {
+    case 0:
+        cout << "Echo Reply (Respuesta de Eco)" << endl;
+        break;
+    case 3:
+        cout << "Destination Unreacheable (destino inaccesible)" << endl;
+        break;
+    case 4:
+        cout << "Source Quench (disminución del tráfico desde el origen)" << endl;
+        break;
+    case 5:
+        cout << "Redirect (redireccionar - cambio de ruta)" << endl;
+        break;
+    case 8:
+        cout << "Echo (Solicitud de eco)" << endl;
+        break;
+    case 11:
+        cout << "Time Exeeded (Tiempo exedido para un datagrama" << endl;
+        break;
+    case 12:
+        cout << "Parameter problem (Problema de parametro)" << endl;
+        break;
+    case 13:
+        cout << "Timestamp (solicitud de marca de tiempo)" << endl;
+        break;
+    case 14:
+        cout << "Timestamp Reply(respuesta de marca de tiempo)" << endl;
+        break;
+    case 15:
+        cout << "Information Request(solicitud de información) - obsoleto - " << endl;
+        break;
+    case 16:
+        cout << "Information Reply (respuesta de información) - obsoleto - " << endl;
+        break;
+    case 17:
+        cout << "Addressmask(solicitud de máscara de dirección)" << endl;
+        break;
+    case 18:
+        cout << "Addressmask Reply (respuesta de máscara de dirección" << endl;
+        break;
+    default:
+        cout << "Codigo de mensaje de error ICMPv4 no reconocido..." << endl;
     }
-    auxS2 = c.convert(bytes[34], 4, 5);
-    auxI1 = c.binario_decimal(auxS2);
-    cout << auxI1;
-}*/
+}
+
+void Trama::codigoErrorICMPv4() 
+{
+    auxS1 = c.convert(bytes[35], 0, 7);
+    auxI1 = c.binario_decimal(auxS1);
+    switch (auxI1)
+    {
+    case 0:
+        cout << "No se puede llegar a la red" << endl;
+        break;
+    case 1:
+        cout << "No se puede llegar al host o aplicacion destino" << endl;
+        break;
+    case 2:
+        cout << "El destino no dispone del protocolo solicitado" << endl;
+        break;
+    case 3:
+        cout << "No se puede llegar al puerto destino o la aplicacion destino no esta libre" << endl;
+        break;
+    case 4:
+        cout << "Se necesita aplicar fragmentacion pero el flag correspondiente indica lo contrario" << endl;
+        break;
+    case 5:
+        cout << "La ruta de origen no es correcta" << endl;
+        break;
+    case 6:
+        cout << "No se conoce la red destino" << endl;
+        break;
+    case 7:
+        cout << "No se conoce el host destino" << endl;
+        break;
+    case 8:
+        cout << "El host origen esta aislado" << endl;
+        break;
+    case 9:
+        cout << "La comunicacion con la red destino esta prohibida por razones administrativas" << endl;
+        break;
+    case 10:
+        cout << "La comunicacion con el host destino esta prohibido por razones administrativas" << endl;
+        break;
+    case 11:
+        cout << "No se puede llegar a la red destino debido al tipo de servicio" << endl;
+        break;
+    case 12:
+        cout << "No se puede llegar al host destino debido al tipo de servicio" << endl;
+        break;
+    default:
+        cout << "Codigo de error ICMPv4 no reconocido..." << endl;
+    }
+}
+
+
 
 void Trama::imprimirResto(){
     cout << "Datos: ";
-    for (int i = 35; i < sizeof(bytes); i++){
+    for (int i = 38; i < sizeof(bytes); i++){
         printf("%02X  ", bytes[i] & 0xFF);
         if((i%10) == 0 )
             cout << endl;

@@ -40,10 +40,15 @@ class Trama{
         int posicionFragmento();
         int tiempoVida();
         void protocolo();
-        void checksum();
+        void checksum(int, std::string);
         void IPorigen();
         void IPdestino();
         void opcionesIP();
+
+        //Metodos para el protocolo ICMPv4
+        void ICMPv4();
+        void tipoMensajeInformativoICMPv4();
+        void codigoErrorICMPv4();
 
         void imprimirResto();
 
