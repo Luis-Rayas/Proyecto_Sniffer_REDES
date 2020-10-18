@@ -12,15 +12,12 @@ class Conversiones{
         std::string auxS2;
 
     public:
-
-        //
         std::string convert(char,int,int);
-        std::string convert2(std::string,int,int);
-        int binario_decimal(std::string);
-
-
-
-
+        int stringbinario_decimal(std::string);
+        //Estas funciones tambien pueden ir en trama si quiere que lleve
+        //menos parametros xd
+        void imprimir_hexadecimal(int, int,int,int,std::string,unsigned char[]);
+        
 };
 
 #endif // CONVERSIONES_H_INCLUDED

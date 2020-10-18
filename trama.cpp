@@ -9,56 +9,51 @@ Trama::Trama(const Trama &t){ }
 Trama& Trama::operator=(const Trama &t){ }
 
 void Trama::setArrBytes(unsigned char byte, int contadorByte){
-
     bytes[contadorByte] = byte;
+}
 
+int Trama::btodecimal(int aux){
+    auxS1 = "";
+    auxS1 = c.convert(bytes[aux], 0, 7);
+    auxI1 = c.stringbinario_decimal(auxS1);
+    return auxI1;
+}
+
+int Trama::b2todecimal(int aux){  
+    auxS2 = "";
+    auxS1 = c.convert(bytes[aux], 0, 7);
+    auxS2 += auxS1;
+    auxS1 = c.convert(bytes[aux+1], 0, 7);
+    auxS2 += auxS1;
+    auxI1 = c.stringbinario_decimal(auxS2);
+    return auxI1;
 }
 
 void Trama::ethernet(){
-    imprimirEthernet(0, 5, "Direccion de origen: ");
-    imprimirEthernet(6, 11, "Direccion de destino: ");
-    imprimirEthernet(12, 13, "Tipo: ");
-
-}
-
-//Funcion para imprimir en hexadecimal
-void Trama::imprimirEthernet(int minimo, int maximo,string campo){
-    int i;
-    cout<<campo ;
-
-    for(i = minimo; i<= maximo; i++){
-        if(i<11)
-            printf("%02X:", bytes[i] & 0xFF);
-        else
-            printf("%02X ", bytes[i] & 0xFF);
-    }
-
-    if(i == 14)
-        tipoDeCodigoEthernet();
-
-
-    cout<<endl;
+    c.imprimir_hexadecimal(0, 5,1,1, "Direccion de origen: ", bytes);
+    c.imprimir_hexadecimal(6, 11,1,1, "Direccion de destino: ",bytes);
+    c.imprimir_hexadecimal(12, 13,0,0, "Tipo: ",bytes);
+    tipoDeCodigoEthernet();
 }
 
 void Trama::tipoDeCodigoEthernet(){
-
     auxI1 += bytes[12] + bytes[13];
 
         switch(auxI1){
             case 8:
-                printf("-> IPv4 ");
+                cout<<"-> IPv4 ";
                 ipv4();
                 break;
             case 14:
-                printf("-> ARP ");
+                cout<<"-> ARP ";
                 ARP();
                 break;
             case 181:
-                printf("-> RARP ");
+                cout<<"-> RARP ";
                 RARP();
                 break;
             case 355:
-                printf("-> IPv6 ");
+                cout<<"-> IPv6 ";
 
     }
 }
@@ -66,11 +61,11 @@ void Trama::tipoDeCodigoEthernet(){
 void Trama::ipv4(){
     version_tamanio();
     tipodeServio();
-    cout<<"Longitud total: "<<longitudTotal()<<" bytes" << endl;
-    cout << "Identificador: " << identificador() << endl;
+    cout<<"Longitud total: "<< b2todecimal(16) <<" bytes" << endl;
+    cout << "Identificador: " << btodecimal(18) + btodecimal(19) << endl;
     flags();
     cout << "Posicion del fragmento: " << posicionFragmento() << endl;
-    cout << "Tiempo de vida: " << tiempoVida() << endl;
+    cout << "Tiempo de vida: " << btodecimal(22) << endl;
     protocolo();
     checksum(24, "IPv4");
     IP_imprimir(26, "IP Origen: "); 
@@ -87,14 +82,14 @@ void Trama::version_tamanio(){
     else
         cout<<"Version: IPv6"<<endl;
 
-    auxI1 = c.binario_decimal(auxS2);
+    auxI1 = c.stringbinario_decimal(auxS2);
 
     cout<<"Tamanio de cabecera: "<<auxI1*4<<" bytes"<<endl;
 }
 
 void Trama::tipodeServio(){
     auxS2 = c.convert(bytes[15],0,2);
-    auxI1 = c.binario_decimal(auxS2);
+    auxI1 = c.stringbinario_decimal(auxS2);
 
     cout << "Tipo de servicio" << endl;
     cout << "Prioridad: " << auxI1 << " ";
@@ -141,23 +136,6 @@ void Trama::tipodeServio(){
     cout  << "    " << "Fiabilidad: " << auxS2 << endl;
 }
 
-int Trama::identificador(){
-    auxS1 = c.convert(bytes[18], 0, 7);
-    auxS2 = c.convert(bytes[19], 0, 7);
-    auxI1 = c.binario_decimal(auxS1);
-    auxI2 = c.binario_decimal(auxS2);
-    int identificador = auxI1 + auxI2;
-    return identificador;
-}
-
-int Trama::longitudTotal(){
-    auxI1 = 0;
-    auxS1 = bytes[16] + bytes[17];
-    auxS2 = c.convert2(auxS1, 0, 15);
-    auxI1 = c.binario_decimal(auxS2);
-    return auxI1;
-}
-
 void Trama::flags(){
     auxS1 = c.convert(bytes[20], 5, 7);
     cout << "Flags " << "( " << auxS1 << " ) "<< endl;
@@ -177,24 +155,14 @@ void Trama::flags(){
 }
 
 int Trama::posicionFragmento(){
-    //auxS1 = c.convert(bytes[20], 4, 0);
     auxS1 = c.convert(bytes[20], 4, 0) + c.convert(bytes[21], 0, 7);;
-    //auxS2 = c.convert(bytes[21], 0, 7);
-    auxI1 = c.binario_decimal(auxS1);
-    return auxI1;
-}
-
-int Trama::tiempoVida(){
-    auxS1 = c.convert(bytes[22], 0, 7);
-    auxI1 = c.binario_decimal(auxS1);
+    auxI1 = c.stringbinario_decimal(auxS1);
     return auxI1;
 }
 
 void Trama::protocolo(){
     cout << "Protocolo" << endl << "    ";
-    auxS1 = c.convert(bytes[23], 0, 7);
-    auxI1 = c.binario_decimal(auxS1);
-    switch(auxI1){
+    switch(btodecimal(23)){
     case 1:
         cout << auxI1 << ". ICMP v4" << endl;
         ICMPv4();
@@ -223,20 +191,14 @@ void Trama::checksum(int noByte, string tipoDeChecksum){
 }
 
 void Trama::IP_imprimir(int x, string ip){
-    int direccionOrigen[4];
-    auxS1 = c.convert(bytes[x], 0, 7);
-    direccionOrigen[0] = c.binario_decimal(auxS1);
-
-    auxS1 = c.convert(bytes[x+1], 0, 7);
-    direccionOrigen[1] = c.binario_decimal(auxS1);
-
-    auxS1 = c.convert(bytes[x+2], 0, 7);
-    direccionOrigen[2] = c.binario_decimal(auxS1);
-
-    auxS1 = c.convert(bytes[x+3], 0, 7);
-    direccionOrigen[3] = c.binario_decimal(auxS1);
-
-    cout << ip << direccionOrigen[0] << "." << direccionOrigen[1] << "." << direccionOrigen[2]<< "." << direccionOrigen[3] << endl;
+    cout<<ip;
+    int direccionOrigen;
+    for(int i = 0; i<4; i++){
+        auxS1 = c.convert(bytes[x++], 0, 7);
+        auxI1 = c.stringbinario_decimal(auxS1);
+        cout<<auxI1<<".";
+     }
+    cout<<"\b \n";
 }
 
 void Trama::ICMPv4() 
@@ -249,9 +211,7 @@ void Trama::ICMPv4()
 
 void Trama::tipoMensajeInformativoICMPv4() 
 {
-    auxS1 = c.convert(bytes[34], 0, 7);
-    auxI1 = c.binario_decimal(auxS1);
-    switch (auxI1)
+    switch (btodecimal(34))
     {
     case 0:
         cout << "Echo Reply (Respuesta de Eco)" << endl;
@@ -299,9 +259,7 @@ void Trama::tipoMensajeInformativoICMPv4()
 
 void Trama::codigoErrorICMPv4() 
 {
-    auxS1 = c.convert(bytes[35], 0, 7);
-    auxI1 = c.binario_decimal(auxS1);
-    switch (auxI1)
+    switch (btodecimal(35))
     {
     case 0:
         cout << "No se puede llegar a la red" << endl;
@@ -348,14 +306,8 @@ void Trama::codigoErrorICMPv4()
 }
 
 void Trama::ARP(){
-    auxS1 = c.convert(bytes[14], 0, 7);
-    auxS2 += auxS1;
-    auxS1 = c.convert(bytes[15], 0, 7);
-    auxS2 += auxS1;
-    auxI1 = c.binario_decimal(auxS2);
-    
     cout << "\nTipo de hardware: ";
-    switch(auxI1){
+    switch(b2todecimal(14)){
         case 1:
             cout << "Ethernet (10mb)";
             break;
@@ -384,48 +336,34 @@ void Trama::ARP(){
             cout << "Serial Line";
     }
     cout << endl;
-    printf("Tipo de protocolo: %02X%02X ", bytes[16] & 0xFF, bytes[17] & 0xFF);
-    auxS2 = "";
-    auxS1 = c.convert(bytes[16], 0, 7);
-    auxS2 += auxS1;
-    auxS1 = c.convert(bytes[17], 0, 7);
-    auxS2 += auxS1;
-    auxI1 = c.binario_decimal(auxS2);
-    switch(auxI1){
+    c.imprimir_hexadecimal(16,17,1,0,"Tipo de protocolo: ", bytes);
+
+    switch(b2todecimal(16)){
         case 2048:
-          cout << "--> IPv4";
+          cout << "-> IPv4";
           break;
 
         case 2054:
-          cout << "--> ARP";
+          cout << "-> ARP";
           break;
 
         case 32821:
-          cout << "--> RARP";
+          cout << "-> RARP";
           break;
         
         case 34525:
-          cout << "--> IPv6";
+          cout << "-> IPv6";
           break;
     }
     cout << endl;
     cout << "Longitud de la dirección hardware en bytes: ";
-    auxS1 = c.convert(bytes[18], 0, 7);
-    cout << c.binario_decimal(auxS1) << endl;
+    cout <<btodecimal(18)<< endl;
 
     cout << "Longitud de la dirección protocolo en bytes: ";
-    auxS1 = c.convert(bytes[19], 0, 7);
-    cout << c.binario_decimal(auxS1) << endl;
+    cout <<btodecimal(19)<< endl;
     
-    auxS2 = "";
     cout << "Codigo de operacion: ";
-    auxS1 = c.convert(bytes[20], 0, 7);
-    auxS2 += auxS1;
-    auxS1 = c.convert(bytes[21], 0, 7);
-    auxS2 += auxS1;
-    auxI1 = c.binario_decimal(auxS2);
-
-    switch(auxI1){
+    switch(b2todecimal(20)){
         case 1:
             cout << "ARP Request";
             break;
@@ -455,29 +393,17 @@ void Trama::ARP(){
     }
     cout << endl;
     
-    printf("Direccion hardware emisor: %02X:%02X:", bytes[22] & 0xFF, bytes[23] & 0xFF);
-    printf("%02X:%02X:", bytes[24] & 0xFF, bytes[25] & 0xFF);
-    printf("%02X:%02X\n", bytes[26] & 0xFF, bytes[27] & 0xFF);
-
+    c.imprimir_hexadecimal(22,27,1,1,"Direccion hardware emisor: ", bytes);
     IP_imprimir(28, "Direccion IP  del Emisor: ");
 
-    printf("Direccion hardware receptor: %02X:%02X:", bytes[32] & 0xFF, bytes[33] & 0xFF);
-    printf("%02X:%02X:", bytes[34] & 0xFF, bytes[35] & 0xFF);
-    printf("%02X:%02X\n", bytes[36] & 0xFF, bytes[37] & 0xFF);
-
+    c.imprimir_hexadecimal(32,37,1,1,"Direccion hardware receptor: ", bytes);
     IP_imprimir(38, "Direccion IP del receptor: ");
-
 }
 
 void Trama::RARP(){
-    auxS1 = c.convert(bytes[14], 0, 7);
-    auxS2 += auxS1;
-    auxS1 = c.convert(bytes[15], 0, 7);
-    auxS2 += auxS1;
-    auxI1 = c.binario_decimal(auxS2);
-    
+
     cout << "\nTipo de hardware: ";
-    switch(auxI1){
+    switch(b2todecimal(14)){
         case 1:
             cout << "Ethernet (10mb)";
             break;
@@ -507,47 +433,29 @@ void Trama::RARP(){
     }
     cout << endl;
     printf("Tipo de protocolo: %02X%02X ", bytes[16] & 0xFF, bytes[17] & 0xFF);
-    auxS2 = "";
-    auxS1 = c.convert(bytes[16], 0, 7);
-    auxS2 += auxS1;
-    auxS1 = c.convert(bytes[17], 0, 7);
-    auxS2 += auxS1;
-    auxI1 = c.binario_decimal(auxS2);
-    switch(auxI1){
+
+    switch(b2todecimal(16)){
         case 2048:
-          cout << "--> IPv4";
+          cout << "-> IPv4";
           break;
-
         case 2054:
-          cout << "--> ARP";
+          cout << "-> ARP";
           break;
-
         case 32821:
-          cout << "--> RARP";
+          cout << "-> RARP";
           break;
-        
         case 34525:
           cout << "--> IPv6";
           break;
     }
     cout << endl;
     cout << "Longitud de la dirección hardware en bytes: ";
-    auxS1 = c.convert(bytes[18], 0, 7);
-    cout << c.binario_decimal(auxS1) << endl;
+    cout << btodecimal(18) << endl;
 
     cout << "Longitud de la dirección protocolo en bytes: ";
-    auxS1 = c.convert(bytes[19], 0, 7);
-    cout << c.binario_decimal(auxS1) << endl;
-    
-    auxS2 = "";
-    cout << "Codigo de operacion: ";
-    auxS1 = c.convert(bytes[20], 0, 7);
-    auxS2 += auxS1;
-    auxS1 = c.convert(bytes[21], 0, 7);
-    auxS2 += auxS1;
-    auxI1 = c.binario_decimal(auxS2);
+    cout << btodecimal(18) << endl;
 
-    switch(auxI1){
+    switch(b2todecimal(20)){
         case 1:
             cout << "ARP Request";
             break;
@@ -577,16 +485,10 @@ void Trama::RARP(){
     }
     cout << endl;
     
-    printf("Direccion hardware emisor: %02X:%02X:", bytes[22] & 0xFF, bytes[23] & 0xFF);
-    printf("%02X:%02X:", bytes[24] & 0xFF, bytes[25] & 0xFF);
-    printf("%02X:%02X\n", bytes[26] & 0xFF, bytes[27] & 0xFF);
-
+    c.imprimir_hexadecimal(22,27,1,1,"Direccion hardware emisor: ", bytes);
     IP_imprimir(28, "Direccion IP  del Emisor: ");
 
-    printf("Direccion hardware receptor: %02X:%02X:", bytes[32] & 0xFF, bytes[33] & 0xFF);
-    printf("%02X:%02X:", bytes[34] & 0xFF, bytes[35] & 0xFF);
-    printf("%02X:%02X\n", bytes[36] & 0xFF, bytes[37] & 0xFF);
-
+    c.imprimir_hexadecimal(32,37,1,1,"Direccion hardware receptor: ", bytes);
     IP_imprimir(38, "Direccion IP del receptor: ");
 
 }

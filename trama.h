@@ -1,6 +1,5 @@
 #ifndef TRAMA_H_INCLUDED
 #define TRAMA_H_INCLUDED
-#define TAM 81
 
 #include <iostream>
 #include <string>
@@ -12,7 +11,7 @@ class Trama{
         int auxI1,auxI2;
         std::string auxS1;
         std::string auxS2;
-        unsigned char bytes[TAM];
+        unsigned char bytes[81];
         Conversiones c;
 
     public:
@@ -23,9 +22,12 @@ class Trama{
 
         void setArrBytes(unsigned char,int);
 
+        //Estas funciones no deberian estar aqui pero pues ni pedo :(
+        int btodecimal(int);
+        int b2todecimal(int);
+        
         //Metodos para la trama Ethernet
         void ethernet();
-        void imprimirEthernet(int, int, std::string);
         void tipoDeCodigoEthernet();
 
 
@@ -33,12 +35,9 @@ class Trama{
         void ipv4();
         void version_tamanio();
         void tipodeServio();
-
-        int longitudTotal();
         int identificador();
         void flags();
         int posicionFragmento();
-        int tiempoVida();
         void protocolo();
         void checksum(int, std::string);
         void IP_imprimir(int,std::string);
@@ -54,6 +53,7 @@ class Trama{
         void RARP();
 
         void imprimirResto();
+
 
 };
 
