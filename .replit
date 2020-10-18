@@ -1,0 +1,2 @@
+language = "bash"
+run = "g++ *.cpp -o main \n ./main"

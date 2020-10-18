@@ -41,14 +41,17 @@ class Trama{
         int tiempoVida();
         void protocolo();
         void checksum(int, std::string);
-        void IPorigen();
-        void IPdestino();
+        void IP_imprimir(int,std::string);
         void opcionesIP();
 
         //Metodos para el protocolo ICMPv4
         void ICMPv4();
         void tipoMensajeInformativoICMPv4();
         void codigoErrorICMPv4();
+
+        //Metodos para el protocolo ARP/RARP
+        void ARP();
+        void RARP();
 
         void imprimirResto();
 
