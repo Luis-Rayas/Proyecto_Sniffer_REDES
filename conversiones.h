@@ -16,7 +16,7 @@ class Conversiones{
         int stringbinario_decimal(std::string);
         //Estas funciones tambien pueden ir en trama si quiere que lleve
         //menos parametros xd
-        void imprimir_hexadecimal(int, int,int,int,std::string,unsigned char[]);
+        void imprimir_hexadecimal(int, int, int, int,std::string, unsigned char[]);
         
 };
 

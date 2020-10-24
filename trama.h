@@ -34,11 +34,11 @@ class Trama{
         //Metodos para el encabezado IPv4
         void ipv4();
         void version_tamanio();
-        void tipodeServio();
+        void tipodeServicio();
         int identificador();
         void flags();
         int posicionFragmento();
-        void protocolo();
+        void protocolo(int);
         void checksum(int, std::string);
         void IP_imprimir(int,std::string);
         void opcionesIP();
@@ -52,6 +52,11 @@ class Trama{
         void ARP();
         void RARP();
 
+        //Metodos para protocolo IPv6
+        void IPv6();
+        void clase_trafico();
+        
+        
         void imprimirResto();
 
 

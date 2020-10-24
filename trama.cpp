@@ -54,19 +54,20 @@ void Trama::tipoDeCodigoEthernet(){
                 break;
             case 355:
                 cout<<"-> IPv6 ";
+                IPv6();
 
     }
 }
 
 void Trama::ipv4(){
     version_tamanio();
-    tipodeServio();
-    cout<<"Longitud total: "<< b2todecimal(16) <<" bytes" << endl;
+    tipodeServicio();
+    cout << "Longitud total: " << b2todecimal(16) << " bytes" << endl;
     cout << "Identificador: " << btodecimal(18) + btodecimal(19) << endl;
     flags();
     cout << "Posicion del fragmento: " << posicionFragmento() << endl;
     cout << "Tiempo de vida: " << btodecimal(22) << endl;
-    protocolo();
+    protocolo(23);
     checksum(24, "IPv4");
     IP_imprimir(26, "IP Origen: "); 
     IP_imprimir(30, "IP Destino: ");
@@ -75,23 +76,24 @@ void Trama::ipv4(){
 void Trama::version_tamanio(){
 
     auxS1 = c.convert(bytes[14], 4,7);
-    auxS2 = c.convert(bytes[14], 0,3);
-
-    if(auxS1 == "0100")
-        cout<<"Version: IPv4"<<endl;
-    else
-        cout<<"Version: IPv6"<<endl;
-
-    auxI1 = c.stringbinario_decimal(auxS2);
-
-    cout<<"Tamanio de cabecera: "<<auxI1*4<<" bytes"<<endl;
+    if(auxS1 == "0100"){
+        auxS2 = c.convert(bytes[14], 4,7);
+        cout << "Version: IPv4" << endl;
+        auxI1 = c.stringbinario_decimal(auxS2);
+        cout<< "Tamanio de cabecera: " << auxI1*4 << " bytes" << endl;
+       
+    }
+    if(auxS1 == "0110"){
+        cout << "Version: IPv6" << endl;
+    }
+    
 }
 
-void Trama::tipodeServio(){
-    auxS2 = c.convert(bytes[15],0,2);
+void Trama::tipodeServicio(){
+    auxS2 = c.convert(bytes[15], 0, 2);
     auxI1 = c.stringbinario_decimal(auxS2);
 
-    cout << "Tipo de servicio" << endl;
+    cout << "Tipo de Servicio" << endl;
     cout << "Prioridad: " << auxI1 << " ";
 
     switch(auxI1){
@@ -121,7 +123,7 @@ void Trama::tipodeServio(){
     }
 
     cout << endl;
-    auxS1 = c.convert(bytes[14],3,5);
+    auxS1 = c.convert(bytes[15],3,5);
 
     auxI1 = auxS1[0] - '0';
     auxS2 = (auxI1 == 0) ? "normal" : "bajo";
@@ -160,9 +162,9 @@ int Trama::posicionFragmento(){
     return auxI1;
 }
 
-void Trama::protocolo(){
-    cout << "Protocolo" << endl << "    ";
-    switch(btodecimal(23)){
+void Trama::protocolo(int byte){
+    cout << "Protocolo siguiente:" << endl << "    ";
+    switch(btodecimal(byte)){
     case 1:
         cout << auxI1 << ". ICMP v4" << endl;
         ICMPv4();
@@ -191,7 +193,7 @@ void Trama::checksum(int noByte, string tipoDeChecksum){
 }
 
 void Trama::IP_imprimir(int x, string ip){
-    cout<<ip;
+    cout << ip;
     int direccionOrigen;
     for(int i = 0; i<4; i++){
         auxS1 = c.convert(bytes[x++], 0, 7);
@@ -295,10 +297,10 @@ void Trama::codigoErrorICMPv4()
         cout << "La comunicacion con el host destino esta prohibido por razones administrativas" << endl;
         break;
     case 11:
-        cout << "No se puede llegar a la red destino debido al tipo de servicio" << endl;
+        cout << "No se puede llegar a la red destino debido al tipo de Servicio" << endl;
         break;
     case 12:
-        cout << "No se puede llegar al host destino debido al tipo de servicio" << endl;
+        cout << "No se puede llegar al host destino debido al tipo de Servicio" << endl;
         break;
     default:
         cout << "Codigo de error ICMPv4 no reconocido..." << endl;
@@ -495,9 +497,109 @@ void Trama::RARP(){
 
 void Trama::imprimirResto(){
     cout << "Datos: ";
-    for (int i = 38; i < sizeof(bytes); i++){
+    for (int i = 54; i < sizeof(bytes); i++){
         printf("%02X  ", bytes[i] & 0xFF);
         if((i%10) == 0 )
             cout << endl;
     }
 }
+
+void Trama::IPv6(){
+    cout << endl;
+    version_tamanio();
+    clase_trafico();
+    
+    cout << "Etiqueda de flujo: ";
+    auxS1 = c.convert(bytes[15], 4, 7) + c.convert(bytes[16], 0, 7) + c.convert(bytes[17], 0, 7);
+    auxI1 = c.stringbinario_decimal(auxS1);
+    cout << auxI1 << endl;
+
+    cout << "Tamanio de Datos: ";
+    auxS1 = c.convert(bytes[18], 0, 7) + c.convert(bytes[19], 0, 7);
+    auxI1 = c.stringbinario_decimal(auxS1);
+    cout << auxI1 << endl;
+
+    protocolo(20);
+
+    cout << "Limite de salto: " << btodecimal(21) << endl;
+
+    cout << "Direccion de origen: ";
+    int i = 22;
+    int contador = 1;
+    while(i < 38){
+        printf("%02X", bytes[i] & 0xFF);
+        
+        if(contador%2 == 0)
+            cout << ":";
+        
+        i++;
+        contador++;
+    }
+    cout<<"\b \n";
+    
+    cout << "Direccion de destino: ";
+    i = 38;
+    contador = 1;
+    while(i < 54){
+        printf("%02X", bytes[i] & 0xFF);
+        
+        if(contador%2 == 0)
+            cout << ":";
+        
+        i++;
+        contador++;
+    }
+    cout << "\b \n";
+    
+    
+}
+
+void Trama::clase_trafico(){
+    auxS2 = c.convert(bytes[14], 0, 3);
+    auxI1 = c.stringbinario_decimal(auxS2);
+
+    cout << "Clase de trafico:" << endl;
+    cout << "Prioridad: " << auxI1 << " ";
+
+    switch(auxI1){
+        case 0:
+            cout << "    " << "De rutina";
+            break;
+        case 1:
+            cout << "    "  << "Prioritario";
+            break;
+        case 2:
+            cout << "    "  << "Inmediato";
+            break;
+        case 3:
+            cout << "    "  << "Relampago";
+            break;
+        case 4:
+            cout << "    "  << "Invalidacion relampago";
+            break;
+        case 5:
+            cout << "    "  << "Procesando llamada critica";
+            break;
+        case 6:
+            cout << "    "  << "Control de trabajo de Internet";
+            break;
+        case 7:
+            cout << "    "  << "Control de red";
+    }
+
+    cout << endl;
+    auxS1 =c.convert(bytes[14], 6, 7) + c.convert(bytes[15],0,3);
+
+    auxI1 = auxS1[0] - '0';
+    auxS2 = (auxI1 == 0) ? "normal" : "bajo";
+    cout  << "    " << "Retardo: " << auxS2 << endl;
+
+    auxI1 = auxS1[1] - '0';
+    auxS2 = (auxI1 == 0) ? "normal" : "bajo";
+    cout  << "    " << "Rendimiento: " << auxS2 << endl;
+
+    auxI1 = auxS1[2] - '0';
+    auxS2 = (auxI1 == 0) ? "normal" : "bajo";
+    cout  << "    " << "Fiabilidad: " << auxS2 << endl;
+}
+

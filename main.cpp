@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    FILE *archivo = fopen("ethernet_ipv4_icmp_host_unreachable.bin", "rb");
+    FILE *archivo = fopen("ethernet_ipv6_nd.bin", "rb");
     unsigned char dato;
 
     int ParteTrama = 0;
@@ -13,7 +13,8 @@ int main()
     int i = 0;
 
     if (archivo == NULL)
-        printf("Eror\n");
+        printf("Error\n");
+        
     else
     {
         while(!feof(archivo))
