@@ -98,28 +98,28 @@ void Trama::tipodeServicio(){
 
     switch(auxI1){
         case 0:
-            cout << "    " << "De rutina";
+            cout << " ->  " << "De rutina";
             break;
         case 1:
-            cout << "    "  << "Prioritario";
+            cout << " ->  "  << "Prioritario";
             break;
         case 2:
-            cout << "    "  << "Inmediato";
+            cout << " ->  "  << "Inmediato";
             break;
         case 3:
-            cout << "    "  << "Relampago";
+            cout << " ->  "  << "Relampago";
             break;
         case 4:
-            cout << "    "  << "Invalidacion relampago";
+            cout << " ->  "  << "Invalidacion relampago";
             break;
         case 5:
-            cout << "    "  << "Procesando llamada critica";
+            cout << " ->  "  << "Procesando llamada critica";
             break;
         case 6:
-            cout << "    "  << "Control de trabajo de Internet";
+            cout << " ->  "  << "Control de trabajo de Internet";
             break;
         case 7:
-            cout << "    "  << "Control de red";
+            cout << " ->  "  << "Control de red";
     }
 
     cout << endl;
@@ -510,7 +510,7 @@ void Trama::IPv6(){
     clase_trafico();
     
     cout << "Etiqueda de flujo: ";
-    auxS1 = c.convert(bytes[15], 4, 7) + c.convert(bytes[16], 0, 7) + c.convert(bytes[17], 0, 7);
+    auxS1 = c.convert(bytes[15], 0, 3) + c.convert(bytes[16], 0, 7) + c.convert(bytes[17], 0, 7);
     auxI1 = c.stringbinario_decimal(auxS1);
     cout << auxI1 << endl;
 
@@ -563,32 +563,32 @@ void Trama::clase_trafico(){
 
     switch(auxI1){
         case 0:
-            cout << "    " << "De rutina";
+            cout << " ->  " << "De rutina";
             break;
         case 1:
-            cout << "    "  << "Prioritario";
+            cout << " ->  " << "Prioritario";
             break;
         case 2:
-            cout << "    "  << "Inmediato";
+            cout << " ->  "  << "Inmediato";
             break;
         case 3:
-            cout << "    "  << "Relampago";
+            cout << " ->  "  << "Relampago";
             break;
         case 4:
-            cout << "    "  << "Invalidacion relampago";
+            cout << " ->  "  << "Invalidacion relampago";
             break;
         case 5:
-            cout << "    "  << "Procesando llamada critica";
+            cout << " ->  "  << "Procesando llamada critica";
             break;
         case 6:
-            cout << "    "  << "Control de trabajo de Internet";
+            cout << " ->  "  << "Control de trabajo de Internet";
             break;
         case 7:
-            cout << "    "  << "Control de red";
+            cout << " ->  "  << "Control de red";
     }
 
     cout << endl;
-    auxS1 =c.convert(bytes[14], 6, 7) + c.convert(bytes[15],0,3);
+    auxS1 =c.convert(bytes[15],4,7);
 
     auxI1 = auxS1[0] - '0';
     auxS2 = (auxI1 == 0) ? "normal" : "bajo";
