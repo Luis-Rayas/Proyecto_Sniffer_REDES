@@ -177,6 +177,7 @@ void Trama::protocolo(int byte){
         break;
     case 58:
         cout << auxI1 << ". ICMP v6" << endl;
+        //ICMPv6();
         break;
     case 118:
         cout << auxI1 << ". STP" << endl;
@@ -497,7 +498,7 @@ void Trama::RARP(){
 
 void Trama::imprimirResto(){
     cout << "Datos: ";
-    for (int i = 54; i < sizeof(bytes); i++){
+    for (int i = 58; i < sizeof(bytes); i++){
         printf("%02X  ", bytes[i] & 0xFF);
         if((i%10) == 0 )
             cout << endl;
@@ -549,8 +550,26 @@ void Trama::IPv6(){
         i++;
         contador++;
     }
-    cout << "\b \n";
-    
+
+    switch(btodecimal(20)){
+    case 6:
+        cout << auxI1 << ". TCP" << endl;
+        break;
+    case 17:
+        cout << auxI1 << ". UDP" << endl;
+        break;
+    case 58:
+        cout << auxI1 << ". ICMP v6" << endl;
+        cout << "=============ICMPv6==============" << endl;
+        ICMPv6();
+        break;
+    case 118:
+        cout << auxI1 << ". STP" << endl;
+        break;
+    case 121:
+        cout << auxI1 << ". SMP" << endl;
+        break;
+    }
     
 }
 
@@ -603,3 +622,82 @@ void Trama::clase_trafico(){
     cout  << "    " << "Fiabilidad: " << auxS2 << endl;
 }
 
+void Trama::ICMPv6(){
+  tipoMensajeInformativoICMPv6();
+  checksum(56,"IPv6");
+}
+
+
+void Trama::tipoMensajeInformativoICMPv6() 
+{
+    switch (btodecimal(54))
+    {
+    case 1:
+        cout << "1. Mensaje de destino inalcanzable" << endl;
+        switch(btodecimal(55)){
+            case 0:
+              cout << "0. No existe ruta destino" << endl;
+              break;
+            case 1:
+              cout << "1. Comunicacion con el destino administrativamente prohibida" << endl;
+              break;
+            case 2:
+              cout << "2. No asignado" << endl;
+              break;
+            case 3:
+              cout << "3. Direccion inalcanzable" << endl;
+              break;
+        }
+        break;
+    case 2:
+        cout << "2. Mensaje de paquete demasiado grande" << endl;
+        cout << "Descripcion del campo codigo: 0" << endl;
+        break;
+    case 3:
+        cout << "3. Time Exceeded Message" << endl;
+        switch(btodecimal(55)){
+            case 0:
+              cout<<"0. El limite de salto excedido"<<endl;
+              break;
+            case 1:
+              cout<<"1. Tiempo de reensamble de fragmento excedido"<<endl;
+              break;
+        }
+        break;
+    case 4:
+        cout << "4. Mesaje de problema de parametro" << endl;
+        switch(btodecimal(55)){
+          case 0:
+            cout << "0. El campo del encabezado erroneo encontro" << endl;
+            break;
+          case 1:
+            cout << "1. El tipo siguiete desconocido de la encabezado encontro" << endl;
+            break;
+          case 2 :
+            cout << "2. Opcion desconocida del IPv6 encontrada" << endl;
+            break;
+        }
+        break;
+    case 128:
+        cout << "128. Mensaje del pedido de eco" << endl;
+        break;
+    case 129:
+        cout << "129. Mensaje de respuesta de eco" << endl;
+        break;
+    case 133:
+        cout << "133. Mensaje de solicitud del router" << endl;
+        break;
+    case 134:
+        cout << "134. Mensaje de anuncio del router" << endl;
+        break;
+    case 135:
+        cout << "135. Mensaje de solucitud vecino" << endl;
+        break;
+    case 136:
+        cout << "136. Mensaje de anuncio de vecino" << endl;
+        break;
+    case 137:
+        cout << "137. Reoriente el mensaje " << endl;
+        break;
+  }
+}

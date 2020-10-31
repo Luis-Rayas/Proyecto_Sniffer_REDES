@@ -55,7 +55,10 @@ class Trama{
         //Metodos para protocolo IPv6
         void IPv6();
         void clase_trafico();
-        
+
+        //Metodos para protocolo ICMPv6
+        void ICMPv6();
+        void tipoMensajeInformativoICMPv6();
         
         void imprimirResto();
 

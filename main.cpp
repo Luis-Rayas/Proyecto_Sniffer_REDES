@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    FILE *archivo = fopen("ethernet_ipv6_nd.bin", "rb");
+    FILE *archivo = fopen("ipv6_icmpv6_destination_unreachable.bin", "rb");
     unsigned char dato;
 
     int ParteTrama = 0;
@@ -26,6 +26,5 @@ int main()
         t.ethernet();
         t.imprimirResto();
     }
-
     return 0;
 }
