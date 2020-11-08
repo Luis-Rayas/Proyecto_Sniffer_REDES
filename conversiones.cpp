@@ -15,11 +15,11 @@ string Conversiones::convert(char n,int minimo,int maximo) {
 
 //Convierte la cadena de la funcion convert
 //de binario a decimal
-int Conversiones::stringbinario_decimal(string car){
+long Conversiones::stringbinario_decimal(string car){
 
-  int potencia[16] = {32768,16384,8192,4096,2048,1024,512,256,128,64,32,16,8,4,2,1};
+  long potencia[32] = {2147483648,1073741824,536870912,268435456,134217728,67108864,33554432,16777216,8388608,4194304,2097152,1048576,524288,262144,131072,65536,32768,16384,8192,4096,2048,1024,512,256,128,64,32,16,8,4,2,1};
   auxI1  = 0;
-  int potenciaPos = 16 - car.size();
+  int potenciaPos = 32 - car.size();
 
   for(int i= 0 ; i< car.size() ; i++){
           auxI2 =  car[i] - '0';
@@ -29,7 +29,7 @@ int Conversiones::stringbinario_decimal(string car){
   return auxI1;
 }
 
-void Conversiones::imprimir_hexadecimal(int inicio, int fin,int separacion,int saltoLinea, string campo, unsigned char bytes[]){
+void Conversiones::imprimir_hexadecimal(int inicio, int fin,int separacion,int saltoLinea, string campo, vector<unsigned char> bytes){
     cout<<campo ;
 
     for(int i = inicio; i<= fin; i++){

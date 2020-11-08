@@ -2,21 +2,20 @@
 #define CONVERSIONES_H_INCLUDED
 
 #include <iostream>
+#include <vector>
 #include <string>
 
 class Conversiones{
     private:
-        int auxI1;
-        int auxI2;
+        long auxI1;
+        long auxI2;
         std::string auxS1;
         std::string auxS2;
 
     public:
         std::string convert(char,int,int);
-        int stringbinario_decimal(std::string);
-        //Estas funciones tambien pueden ir en trama si quiere que lleve
-        //menos parametros xd
-        void imprimir_hexadecimal(int, int, int, int,std::string, unsigned char[]);
+        long stringbinario_decimal(std::string);
+        void imprimir_hexadecimal(int, int, int, int,std::string, std::vector<unsigned char>);
         
 };
 

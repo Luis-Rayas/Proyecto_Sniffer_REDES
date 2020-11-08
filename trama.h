@@ -3,15 +3,16 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "conversiones.h"
 
 
 class Trama{
     private:
-        int auxI1,auxI2;
+        long auxI1,auxI2;
         std::string auxS1;
         std::string auxS2;
-        unsigned char bytes[81];
+        std::vector<unsigned char> bytes;
         Conversiones c;
 
     public:
@@ -59,8 +60,11 @@ class Trama{
         //Metodos para protocolo ICMPv6
         void ICMPv6();
         void tipoMensajeInformativoICMPv6();
+
+		    //Metodos para la cabecera TCP
+		    void TCP(int);
         
-        void imprimirResto();
+        void imprimirResto(int);
 
 
 };
