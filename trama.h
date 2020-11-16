@@ -61,8 +61,11 @@ class Trama{
         void ICMPv6();
         void tipoMensajeInformativoICMPv6();
 
-		    //Metodos para la cabecera TCP
-		    void TCP(int);
+        //Metodos para la cabecera TCP
+        void TCP(int);
+
+        //Metodos para la cabecera UDP
+        void UDP(int);
         
         void imprimirResto(int);
 

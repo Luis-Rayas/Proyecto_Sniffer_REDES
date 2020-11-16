@@ -5,7 +5,8 @@ using namespace std;
 
 int main()
 {
-    FILE *archivo = fopen("ethernet_ipv4_tcp.bin", "rb");
+	cout << "♡♡🧸\tArchivo: ethernet_ipv4_udp_dns.bin🧸\t♡♡" << endl << endl;
+    FILE *archivo = fopen("ethernet_ipv4_udp_dns.bin", "rb");
     unsigned char dato;
 
     Trama t;

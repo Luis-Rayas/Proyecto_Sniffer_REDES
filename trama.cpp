@@ -47,10 +47,12 @@ void Trama::tipoDeCodigoEthernet(){
             case 14:
                 cout<<"-> ARP ";
                 ARP();
+                imprimirResto(42);
                 break;
             case 181:
                 cout<<"-> RARP ";
                 RARP();
+                imprimirResto(42);
                 break;
             case 355:
                 cout<<"-> IPv6 ";
@@ -71,7 +73,18 @@ void Trama::ipv4(){
     checksum(24, "IPv4");
     IP_imprimir(26, "IP Origen: "); 
     IP_imprimir(30, "IP Destino: ");
-    imprimirResto(54);
+    switch(btodecimal(23)){
+    case 1:
+        //ICMPv4
+        break;
+    case 6:
+        //TCP
+        break;
+    case 17:
+        imprimirResto(42); //UDP
+        break;
+  }
+    
 }
 
 void Trama::version_tamanio(){
@@ -168,24 +181,39 @@ void Trama::protocolo(int byte){
     switch(btodecimal(byte)){
     case 1:
         cout << auxI1 << ". ICMP v4" << endl;
+		    cout << "=============ICMPv4==============" << endl;
         ICMPv4();
+        cout << "=================================" << endl;
         break;
     case 6:
         cout << auxI1 << ". TCP" << endl;
+		    cout << "=============TCP==============" << endl;
         auxS1 = c.convert(bytes[14], 4,7);
-        if(auxS1 == "0100"){//IPv4   
+        if(auxS1 == "0100"){ //IPv4   
             TCP(34);    
         }
         if(auxS1 == "0110"){ //IPv6
             TCP(54);
         } 
+        cout << "==============================" << endl;
         break;
     case 17:
         cout << auxI1 << ". UDP" << endl;
+		    cout << "=============UDP==============" << endl;
+        auxS1 = c.convert(bytes[14], 4,7);
+        if(auxS1 == "0100"){ //IPv4   
+            UDP(34);    
+        }
+        if(auxS1 == "0110"){ //IPv6
+            UDP(54);
+        } 
+        cout << "==============================" << endl;
         break;
     case 58:
         cout << auxI1 << ". ICMP v6" << endl;
+		    cout << "=============ICMPv6==============" << endl;
         ICMPv6();
+        cout << "=================================" << endl;
         break;
     case 118:
         cout << auxI1 << ". STP" << endl;
@@ -456,7 +484,7 @@ void Trama::RARP(){
           cout << "-> RARP";
           break;
         case 34525:
-          cout << "--> IPv6";
+          cout << "-> IPv6";
           break;
     }
     cout << endl;
@@ -561,21 +589,13 @@ void Trama::IPv6(){
 
     switch(btodecimal(20)){
     case 6:
-        cout << auxI1 << ". TCP" << endl;
+        //TCP
         break;
     case 17:
-        cout << auxI1 << ". UDP" << endl;
+        //UDP
         break;
     case 58:
-        cout << auxI1 << ". ICMP v6" << endl;
-        cout << "=============ICMPv6==============" << endl;
-        ICMPv6();
-        break;
-    case 118:
-        cout << auxI1 << ". STP" << endl;
-        break;
-    case 121:
-        cout << auxI1 << ". SMP" << endl;
+        imprimirResto(58);  //ICMP 
         break;
     }
     
@@ -878,4 +898,126 @@ void Trama::TCP(int byte){ //38
     c.imprimir_hexadecimal(byte+15, byte+16, 0, 0, "Suma de verificacion: ", bytes);
 	cout << endl;
     cout << "Puntero urgente: " << b2todecimal(byte+17) << endl;
+	cout << "==============================" << endl;
+}
+
+void Trama::UDP(int byte){
+	auxI1 = b2todecimal(byte); //34 y 35
+    cout << "Puerto de origen: " << auxI1 << "\t" ;
+    
+	if(auxI1 < 1024){
+    cout << "Puerto bien conocido. " << endl;
+    switch(auxI1){
+		case 20:
+			cout << "20. servicio FTP" << endl;
+			break;
+		case 21:
+			cout << "21. servicio FTP" << endl;
+			break;
+		case 22:
+			cout << "22. servicio SSH" << endl;
+			break;
+		case 23:
+			cout << "23. servicio TELNET" << endl;
+			break;
+		case 25:
+			cout << "25. servicio SMTP" << endl;
+			break;
+		case 53:
+			cout << "53. servicio DNS" << endl;
+			break;
+		case 67:
+			cout << "67. servicio DHCP" << endl;
+			break;
+		case 68:
+			cout << "68. servicio DHCP" << endl;
+			break;
+		case 69:
+			cout << "69. servicio TFTP" << endl;
+			break;
+		case 80:
+			cout << "80. servicio HTTP" << endl;
+			break;
+		case 110:
+			cout << "143. servicio POP3" << endl;
+			break;
+		case 143:
+			cout << "143. servicio IMAP" << endl;
+			break;
+		case 443:
+			cout << "443. servicio HTTPS" << endl;
+			break;
+		case 993:
+			cout << "993. servicio IMAP SSL" << endl;
+			break;
+		case 995:
+			cout << "995. servicio POP SSL" << endl;
+			break;
+    }
+	}
+	else if (auxI1 > 1023 && auxI1 < 49152){
+		cout << "Puertos registrados​" << endl;
+	}
+	else if (auxI1 > 49152 && auxI1 < 65535){
+		cout << "Puertos dinamicos o privados​" << endl;
+	}
+  
+
+  auxI1 = b2todecimal(byte+2); // 36 y37
+  cout << "Puerto de destino: " << auxI1 << "\t";
+  if(auxI1 < 1024){
+    cout << "Puerto bien conocido. " << endl;
+    switch(auxI1){
+		case 20:
+			cout << "20. servicio FTP" << endl;
+			break;
+		case 21:
+			cout << "21. servicio FTP" << endl;
+			break;
+		case 22:
+			cout << "22. servicio SSH" << endl;
+			break;
+		case 23:
+			cout << "23. servicio TELNET" << endl;
+			break;
+		case 25:
+			cout << "25. servicio SMTP" << endl;
+			break;
+		case 53:
+			cout << "53. servicio DNS" << endl;
+			break;
+		case 67:
+			cout << "67. servicio DHCP" << endl;
+			break;
+		case 68:
+			cout << "68. servicio DHCP" << endl;
+			break;
+		case 69:
+			cout << "69. servicio TFTP" << endl;
+			break;
+		case 80:
+			cout << "80. servicio HTTP" << endl;
+			break;
+		case 110:
+			cout << "143. servicio POP3" << endl;
+			break;
+		case 143:
+			cout << "143. servicio IMAP" << endl;
+			break;
+		case 443:
+			cout << "443. servicio HTTPS" << endl;
+			break;
+		case 993:
+			cout << "993. servicio IMAP SSL" << endl;
+			break;
+		case 995:
+			cout << "995. servicio POP SSL" << endl;
+			break;
+    }
+  }
+	
+	c.imprimir_hexadecimal(byte+5, byte+6, 0, 0, "Longitud Total: ", bytes);
+	cout << endl;
+
+	checksum(byte + 7, "UDP");
 }
