@@ -1,18 +1,18 @@
 #ifndef TRAMA_H_INCLUDED
 #define TRAMA_H_INCLUDED
-#define TAM 81
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "conversiones.h"
 
 
 class Trama{
     private:
-        int auxI1,auxI2;
+        long auxI1,auxI2;
         std::string auxS1;
         std::string auxS2;
-        unsigned char bytes[TAM];
+        std::vector<unsigned char> bytes;
         Conversiones c;
 
     public:
@@ -23,23 +23,23 @@ class Trama{
 
         void setArrBytes(unsigned char,int);
 
+        //Estas funciones no deberian estar aqui pero pues ni pedo :(
+        int btodecimal(int);
+        int b2todecimal(int);
+        
         //Metodos para la trama Ethernet
         void ethernet();
-        void imprimirEthernet(int, int, std::string);
         void tipoDeCodigoEthernet();
 
 
         //Metodos para el encabezado IPv4
         void ipv4();
         void version_tamanio();
-        void tipodeServio();
-
-        int longitudTotal();
+        void tipodeServicio();
         int identificador();
         void flags();
         int posicionFragmento();
-        int tiempoVida();
-        void protocolo();
+        void protocolo(int);
         void checksum(int, std::string);
         void IP_imprimir(int,std::string);
         void opcionesIP();
@@ -53,7 +53,22 @@ class Trama{
         void ARP();
         void RARP();
 
-        void imprimirResto();
+        //Metodos para protocolo IPv6
+        void IPv6();
+        void clase_trafico();
+
+        //Metodos para protocolo ICMPv6
+        void ICMPv6();
+        void tipoMensajeInformativoICMPv6();
+
+        //Metodos para la cabecera TCP
+        void TCP(int);
+
+        //Metodos para la cabecera UDP
+        void UDP(int);
+        
+        void imprimirResto(int);
+
 
 };
 

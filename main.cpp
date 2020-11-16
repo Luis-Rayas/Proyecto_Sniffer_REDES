@@ -5,25 +5,25 @@ using namespace std;
 
 int main()
 {
-    FILE *archivo = fopen("ethernet_arp_reply.bin", "rb");
+	cout << "♡♡🧸\tArchivo: ethernet_ipv4_udp_dns.bin🧸\t♡♡" << endl << endl;
+    FILE *archivo = fopen("ethernet_ipv4_udp_dns.bin", "rb");
     unsigned char dato;
 
-    int ParteTrama = 0;
     Trama t;
-    int i;
+    int i = 0;
 
     if (archivo == NULL)
-        printf("Eror\n");
+        printf("Error\n");
+        
     else
     {
-        for (i = 0; !feof(archivo); i++)
+        while(!feof(archivo))
         {
             dato = getc(archivo);
             t.setArrBytes(dato, i);
+            i++;
         }
         t.ethernet();
-        t.imprimirResto();
     }
-
     return 0;
 }
