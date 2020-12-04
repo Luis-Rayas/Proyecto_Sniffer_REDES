@@ -73,6 +73,7 @@ void Trama::ipv4(){
     checksum(24, "IPv4");
     IP_imprimir(26, "IP Origen: "); 
     IP_imprimir(30, "IP Destino: ");
+
     switch(btodecimal(23)){
     case 1:
         //ICMPv4
@@ -81,7 +82,7 @@ void Trama::ipv4(){
         //TCP
         break;
     case 17:
-        imprimirResto(42); //UDP
+        //imprimirResto(42); //UDP
         break;
   }
     
@@ -190,10 +191,12 @@ void Trama::protocolo(int byte){
 		    cout << "=============TCP==============" << endl;
         auxS1 = c.convert(bytes[14], 4,7);
         if(auxS1 == "0100"){ //IPv4   
-            TCP(34);    
+            TCP(34);
+            DNS(54, 4);    
         }
         if(auxS1 == "0110"){ //IPv6
             TCP(54);
+            DNS(74, 6);
         } 
         cout << "==============================" << endl;
         break;
@@ -202,10 +205,12 @@ void Trama::protocolo(int byte){
 		    cout << "=============UDP==============" << endl;
         auxS1 = c.convert(bytes[14], 4,7);
         if(auxS1 == "0100"){ //IPv4   
-            UDP(34);    
+            UDP(34);
+			DNS(42, 4);
         }
         if(auxS1 == "0110"){ //IPv6
             UDP(54);
+			DNS(62, 6);
         } 
         cout << "==============================" << endl;
         break;
@@ -1020,4 +1025,308 @@ void Trama::UDP(int byte){
 	cout << endl;
 
 	checksum(byte + 7, "UDP");
+}
+
+
+void Trama::DNS(int byte, int version){
+    cout << "-------DNS-------" << endl;
+    
+	//encabezado 12 bytes
+	c.imprimir_hexadecimal(byte, byte + 1, 0, 0, "Indentificador: ", bytes); //16 bits
+	cout << endl;
+	cout << "Flags:" << endl;
+    //QR 
+	auxS1 = c.convert(bytes[byte + 2], 6, 7);
+	auxI1 = auxS1[0] - '0'; //char a entero
+	auxS1 = (auxI1 == 1) ? "QR -> 1: Respuesta":"QR -> 0: Consulta ";
+  	cout << auxS1 << "\n";
+
+    auxS1 = c.convert(bytes[byte + 2], 3 ,6);
+    auxI1 = c.stringbinario_decimal(auxS1);
+    cout << "OP Code -> \t";
+    switch(auxI1){
+        case 0:
+            cout << "0 - Consulta estandar (QUERY)" << endl;
+            break;
+        case 1:
+            cout << "1 - Consulta inversa (IQUERY)" << endl;
+            break;
+		case 2:
+			cout << "2 - solicitud del estado del servidor(STATUS)"  << endl;
+            break;
+        default:
+            cout << "*Se reversan los otros valores para uso en el futuro" << endl;
+            break;
+	}
+
+    //AA
+    auxS1 = c.convert(bytes[byte + 2], 0, 3);
+    auxI1 = auxS1[0] - '0';
+    auxS2 = (auxI1 == 1) ? "AA -> 1" : "AA -> 0";
+	cout << auxS2 << "\t";
+    //TC";
+	auxI1 = auxS1[1] - '0';
+	auxS2 = (auxI1 == 1) ? "TC -> 1" : "TC -> 0";
+	cout << auxS2 << endl;
+    //RD
+	auxI1 = auxS1[2] - '0';
+	auxS2 = (auxI1 == 1) ? "RD -> 1" : "RD -> 0";
+	cout << auxS2 << "\t";
+    //RA
+    auxS1 = c.convert(bytes[byte+3], 6,7);
+    auxI1 = auxS1[0] - '0';
+	auxS2 = (auxI1 == 1) ? "RA -> 1" : "RA -> 0";
+	cout << auxS2 << endl;
+
+	//Zero 3 bits deben ser cero
+	auxS1 = c.convert(bytes[byte + 3], 4, 6); 
+	cout << "Z -> " << auxS1 << endl;
+
+    //Rcode 4 bits en decimal
+	/*
+	0. Ningún error.​
+
+1. Error de formato. El servidor fue incapaz de interpretar el mensaje.​
+
+2. Fallo en el servidor. El mensaje no fue procesado debido a un problema con el servidor.​
+
+3. Error en nombre. El nombre de dominio de la consulta no existe. Sólo válido si el bit AA está activo en la respuesta.​
+
+4. No implementado. El tipo solicitado de consulta no está implementado en el servidor de nombres.​
+
+5. Rechazado. El servidor rechaza responder por razones políticas. Los demás valores se reservan para su usuario en el futuro.​
+	*/
+    auxS1 = c.convert(bytes[byte+3], 0, 4);
+    auxI1 = c.stringbinario_decimal(auxS1);
+	cout << "Rcode -> ";
+	switch(auxI1){
+	case 0:
+		cout << "0. Ningún error.​";
+		break;
+	case 1:
+		cout << "1. Error de formato";
+		break;
+    case 2:
+		cout << "2. Fallo en el servidor";
+		break;
+    case 3:
+		cout << "3. Error en nombre";
+		break;
+    case 4:
+		cout << "4. No implementado";
+		break;
+    case 5:
+		cout << "5. Rechazado";
+		break;
+	}
+	cout << endl;
+
+	int preguntas, respuestas;
+  auxS1 = c.convert(bytes[byte+4], 0, 7) + c.convert(bytes[byte+5], 0, 7);
+  preguntas = c.stringbinario_decimal(auxS1);
+	cout << "QDcount: " << preguntas << endl;
+
+	auxS1 = c.convert(bytes[byte+6], 0, 7) + c.convert(bytes[byte+7], 0, 7);
+  respuestas = c.stringbinario_decimal(auxS1);
+	cout << "ANcount: " << respuestas << endl;
+
+	auxS1 = c.convert(bytes[byte+8], 0, 7) + c.convert(bytes[byte+9], 0, 7);
+  auxI1 = c.stringbinario_decimal(auxS1);
+	cout << "NScount: " << auxI1 << endl;
+
+	auxS1 = c.convert(bytes[byte+10], 0, 7) + c.convert(bytes[byte+11], 0, 7);
+  auxI1 = c.stringbinario_decimal(auxS1);
+	cout << "ARcount: " << auxI1 << endl;
+
+  //🌈http://miles.gatuno.mx/🌈 🐈🐈🐈
+
+  cout <<endl << "Preguntas: " << endl<<endl;
+  int contador = byte+12;
+  int i(0),a,b;	 
+  
+	while(i < preguntas){
+    a = bytes[contador];
+    b = -1;
+      while(b <= a){
+        cout << bytes[contador++];
+        b++;
+        if(a == 0){
+				  break;
+			  }
+
+        if(a == b){
+				  cout << ".";
+          a = bytes[contador];
+          b = -1;
+        }
+      }
+
+      cout<<"\b \n";
+      cout << "Tipo: ";
+      auxS1 = c.convert(bytes[contador], 0, 7) + c.convert(bytes[contador+1], 0, 7);
+      auxI1 = c.stringbinario_decimal(auxS1);
+
+      switch(auxI1){
+        case 1:
+          cout << "1. A " << endl;
+          break;
+        case 5:
+          cout << "5. CNAME" << endl;
+          break;
+        case 13:
+          cout << "13. HINFO" << endl;
+          break;
+        case 15:
+          cout << "15. MX" << endl;
+          break;
+        case 22:
+          cout << "22. NS" << endl;
+          break;
+        case 23:
+          cout << "23. NS" << endl;
+          break;
+      }
+        
+      cout << "Clase: ";
+      auxS1 = c.convert(bytes[contador+2], 0, 7) + c.convert(bytes[contador+3], 0, 7);
+      auxI1 = c.stringbinario_decimal(auxS1);
+
+      switch(auxI1){
+        case 1:
+          cout << "1. IN" << endl;
+          break;
+        case 5:
+          cout << "3. CH" << endl;
+          break;
+      }
+
+      i++;
+	    contador += 4;
+  }
+	cout << endl;
+
+  cout << "Respuesta: " << endl;
+
+  i = 0;
+  int tipoRespuesta;
+  while(i < respuestas){
+    printf("Puntero: %02X:%02X ", bytes[contador] & 0xFF, bytes[contador+1] & 0xFF);
+    contador += 2;
+    cout << "Tipo: ";
+    auxS1 = c.convert(bytes[contador], 0, 7) + c.convert(bytes[contador+1], 0, 7);
+    tipoRespuesta = c.stringbinario_decimal(auxS1);
+
+
+      switch(tipoRespuesta){
+        case 1:
+          cout << "1. A " << endl;
+          break;
+        case 5:
+          cout << "5. CNAME" << endl;
+          break;
+        case 13:
+          cout << "13. HINFO" << endl;
+          break;
+        case 15:
+          cout << "15. MX" << endl;
+          break;
+        case 22:
+          cout << "22. NS" << endl;
+          break;
+        case 23:
+          cout << "23. NS" << endl;
+          break;
+      }
+        
+      cout << "Clase: ";
+      auxS1 = c.convert(bytes[contador+2], 0, 7) + c.convert(bytes[contador+3], 0, 7);
+      auxI1 = c.stringbinario_decimal(auxS1);
+
+      switch(auxI1){
+        case 1:
+          cout << "1. IN" << endl;
+          break;
+        case 5:
+          cout << "3. CH" << endl;
+          break;
+      }
+    contador += 4;
+
+    auxS1 = c.convert(bytes[contador+1], 0, 7) + c.convert(bytes[contador+2], 0, 7) + c.convert(bytes[contador+3], 0, 7) + c.convert(bytes[contador+4], 0, 7);
+    auxI1 = c.stringbinario_decimal(auxS1);
+
+    cout<<" Tiempo de vida: " << auxI1 << "segundos" <<endl;
+
+    cout << "Longitud de datos: ";
+    auxS1 = c.convert(bytes[contador+5], 0, 7) + c.convert(bytes[contador+6], 0, 7);
+    auxI1 = c.stringbinario_decimal(auxS1);
+
+    contador += 6;
+    i++;
+
+    //RData
+    i = 0;
+    int ip;
+      switch(tipoRespuesta){
+        case 1:
+            if(version == 4){
+                while(i < auxI1){
+                auxS2 = c.convert(bytes[contador+i], 0, 7);
+                ip = c.stringbinario_decimal(auxS2);
+                cout << ip << ".";
+                i++;
+                }
+            }
+            if(version == 6){
+                while(i < auxI1){
+                printf("%02X", bytes[contador+i] & 0xFF);
+                if((i+1)%2 == 0){
+                    cout << ":";
+                }
+            }
+            }
+            cout << endl;
+            contador += i-1;
+            cout<<"\b \n";
+          	//cout << "1. A " << endl; direccion IPv4
+          	break;
+        case 5:
+            while(i < auxI1){
+                a = bytes[contador];
+                b = -1;
+                while(b <= a){
+                    cout << bytes[contador++];
+                    b++;
+                    if(a == 0){
+			            break;
+			        }
+                if(a == b){
+			        cout << ".";
+                    a = bytes[contador];
+                    b = -1;
+                }
+            }
+            cout<<"\b \n";
+            i++;
+            }
+          //cout << "5. CNAME" << endl;
+          break;
+        case 15:
+            auxS2 = c.convert(bytes[contador], 0, 7) + c.convert(bytes[contador+1], 0, 7);
+            auxI1 = c.stringbinario_decimal(auxS2);
+            cout << "MX Prioridad: " << auxI1;
+          //cout << "15. MX" << endl;
+          	break;
+        case 22:
+          //cout << "22. NS" << endl;
+          	break;
+        case 23:
+        //cout << "23. NS" << endl;
+          	break;
+      	}
+  	}
+	cout << endl;
+	imprimirResto(contador);
+	
+	cout << endl;
 }

@@ -67,6 +67,9 @@ class Trama{
         //Metodos para la cabecera UDP
         void UDP(int);
         
+        //Metodos para cabecera DNS
+		    void DNS(int, int);
+
         void imprimirResto(int);
 
 
