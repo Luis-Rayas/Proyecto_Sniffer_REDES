@@ -17,7 +17,7 @@ string Conversiones::convert(char n,int minimo,int maximo) {
 //de binario a decimal
 long Conversiones::stringbinario_decimal(string car){
 
-  long potencia[32] = {2147483648,1073741824,536870912,268435456,134217728,67108864,33554432,16777216,8388608,4194304,2097152,1048576,524288,262144,131072,65536,32768,16384,8192,4096,2048,1024,512,256,128,64,32,16,8,4,2,1};
+  long long potencia[32] = {2147483648,1073741824,536870912,268435456,134217728,67108864,33554432,16777216,8388608,4194304,2097152,1048576,524288,262144,131072,65536,32768,16384,8192,4096,2048,1024,512,256,128,64,32,16,8,4,2,1};
   auxI1  = 0;
   int potenciaPos = 32 - car.size();
 
@@ -45,4 +45,3 @@ void Conversiones::imprimir_hexadecimal(int inicio, int fin,int separacion,int s
       cout<<"\b";
     
 }
-
