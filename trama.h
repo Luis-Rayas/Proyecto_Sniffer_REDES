@@ -21,12 +21,12 @@ class Trama{
         Trama(const Trama&);
         Trama& operator = (const Trama&);
 
-        void setArrBytes(unsigned char,int);
+        void setArrBytes(unsigned char);
 
         //Estas funciones no deberian estar aqui pero pues ni pedo :(
         int btodecimal(int);
         int b2todecimal(int);
-        
+
         //Metodos para la trama Ethernet
         void ethernet();
         void tipoDeCodigoEthernet();
@@ -66,13 +66,13 @@ class Trama{
 
         //Metodos para la cabecera UDP
         void UDP(int);
-        
+
         //Metodos para cabecera DNS
-		    void DNS(int, int);
+        void DNS(int, int);
+
+        void limpiarTrama();
 
         void imprimirResto(int);
-
-
 };
 
 

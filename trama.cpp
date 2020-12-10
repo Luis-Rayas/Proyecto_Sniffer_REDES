@@ -8,7 +8,7 @@ Trama::Trama(){
 Trama::Trama(const Trama &t){ }
 Trama& Trama::operator=(const Trama &t){ }
 
-void Trama::setArrBytes(unsigned char byte, int contadorByte){
+void Trama::setArrBytes(unsigned char byte){
     bytes.push_back(byte);
 }
 
@@ -57,7 +57,6 @@ void Trama::tipoDeCodigoEthernet(){
             case 355:
                 cout<<"-> IPv6 ";
                 IPv6();
-
     }
 }
 
@@ -71,7 +70,7 @@ void Trama::ipv4(){
     cout << "Tiempo de vida: " << btodecimal(22) << endl;
     protocolo(23);
     checksum(24, "IPv4");
-    IP_imprimir(26, "IP Origen: "); 
+    IP_imprimir(26, "IP Origen: ");
     IP_imprimir(30, "IP Destino: ");
 
     switch(btodecimal(23)){
@@ -85,7 +84,7 @@ void Trama::ipv4(){
         //imprimirResto(42); //UDP
         break;
   }
-    
+
 }
 
 void Trama::version_tamanio(){
@@ -96,12 +95,12 @@ void Trama::version_tamanio(){
         cout << "Version: IPv4" << endl;
         auxI1 = c.stringbinario_decimal(auxS2);
         cout<< "Tamanio de cabecera: " << auxI1*4 << " bytes" << endl;
-       
+
     }
     if(auxS1 == "0110"){
         cout << "Version: IPv6" << endl;
     }
-    
+
 }
 
 void Trama::tipodeServicio(){
@@ -190,28 +189,28 @@ void Trama::protocolo(int byte){
         cout << auxI1 << ". TCP" << endl;
 		    cout << "=============TCP==============" << endl;
         auxS1 = c.convert(bytes[14], 4,7);
-        if(auxS1 == "0100"){ //IPv4   
+        if(auxS1 == "0100"){ //IPv4
             TCP(34);
-            DNS(54, 4);    
+            DNS(54, 4);
         }
         if(auxS1 == "0110"){ //IPv6
             TCP(54);
             DNS(74, 6);
-        } 
+        }
         cout << "==============================" << endl;
         break;
     case 17:
         cout << auxI1 << ". UDP" << endl;
 		    cout << "=============UDP==============" << endl;
         auxS1 = c.convert(bytes[14], 4,7);
-        if(auxS1 == "0100"){ //IPv4   
+        if(auxS1 == "0100"){ //IPv4
             UDP(34);
 			DNS(42, 4);
         }
         if(auxS1 == "0110"){ //IPv6
             UDP(54);
 			DNS(62, 6);
-        } 
+        }
         cout << "==============================" << endl;
         break;
     case 58:
@@ -245,7 +244,7 @@ void Trama::IP_imprimir(int x, string ip){
     cout<<"\b \n";
 }
 
-void Trama::ICMPv4() 
+void Trama::ICMPv4()
 {
     cout << "ICMPv4: " << endl;
     tipoMensajeInformativoICMPv4();
@@ -253,7 +252,7 @@ void Trama::ICMPv4()
     checksum(36, "ICMPv4");
 }
 
-void Trama::tipoMensajeInformativoICMPv4() 
+void Trama::tipoMensajeInformativoICMPv4()
 {
     switch (btodecimal(34))
     {
@@ -301,7 +300,7 @@ void Trama::tipoMensajeInformativoICMPv4()
     }
 }
 
-void Trama::codigoErrorICMPv4() 
+void Trama::codigoErrorICMPv4()
 {
     switch (btodecimal(35))
     {
@@ -394,7 +393,7 @@ void Trama::ARP(){
         case 32821:
           cout << "-> RARP";
           break;
-        
+
         case 34525:
           cout << "-> IPv6";
           break;
@@ -405,7 +404,7 @@ void Trama::ARP(){
 
     cout << "Longitud de la dirección protocolo en bytes: ";
     cout <<btodecimal(19)<< endl;
-    
+
     cout << "Codigo de operacion: ";
     switch(b2todecimal(20)){
         case 1:
@@ -436,7 +435,7 @@ void Trama::ARP(){
             cout << "InARP Reply";
     }
     cout << endl;
-    
+
     c.imprimir_hexadecimal(22,27,1,1,"Direccion hardware emisor: ", bytes);
     IP_imprimir(28, "Direccion IP  del Emisor: ");
 
@@ -528,7 +527,7 @@ void Trama::RARP(){
             cout << "InARP Reply";
     }
     cout << endl;
-    
+
     c.imprimir_hexadecimal(22,27,1,1,"Direccion hardware emisor: ", bytes);
     IP_imprimir(28, "Direccion IP  del Emisor: ");
 
@@ -538,19 +537,20 @@ void Trama::RARP(){
 }
 
 void Trama::imprimirResto(int algo){
-    cout << "Datos: ";
+    cout << endl << "Datos: ";
     for (int i = algo; i < bytes.size(); i++){
         printf("%02X  ", bytes[i] & 0xFF);
         if((i%10) == 0 )
             cout << endl;
     }
+    cout << endl;
 }
 
 void Trama::IPv6(){
     cout << endl;
     version_tamanio();
     clase_trafico();
-    
+
     cout << "Etiqueda de flujo: ";
     auxS1 = c.convert(bytes[15], 0, 3) + c.convert(bytes[16], 0, 7) + c.convert(bytes[17], 0, 7);
     auxI1 = c.stringbinario_decimal(auxS1);
@@ -570,24 +570,24 @@ void Trama::IPv6(){
     int contador = 1;
     while(i < 38){
         printf("%02X", bytes[i] & 0xFF);
-        
+
         if(contador%2 == 0)
             cout << ":";
-        
+
         i++;
         contador++;
     }
     cout<<"\b \n";
-    
+
     cout << "Direccion de destino: ";
     i = 38;
     contador = 1;
     while(i < 54){
         printf("%02X", bytes[i] & 0xFF);
-        
+
         if(contador%2 == 0)
             cout << ":";
-        
+
         i++;
         contador++;
     }
@@ -600,10 +600,10 @@ void Trama::IPv6(){
         //UDP
         break;
     case 58:
-        imprimirResto(58);  //ICMP 
+        imprimirResto(58);  //ICMP
         break;
     }
-    
+
 }
 
 void Trama::clase_trafico(){
@@ -736,7 +736,7 @@ void Trama::tipoMensajeInformativoICMPv6() {
 void Trama::TCP(int byte){ //38
     auxI1 = b2todecimal(byte); //39 y 40
     cout << "Puerto de origen: " << auxI1 << "\t" ;
-    
+
 	if(auxI1 < 1024){
     cout << "Puerto bien conocido. " << endl;
     switch(auxI1){
@@ -793,7 +793,7 @@ void Trama::TCP(int byte){ //38
 	else if (auxI1 > 49152 && auxI1 < 65535){
 		cout << "Puertos dinamicos o privados​" << endl;
 	}
-  
+
 
   auxI1 = b2todecimal(byte+2);
   cout << "Puerto de destino: " << auxI1 << "\t";
@@ -854,17 +854,17 @@ void Trama::TCP(int byte){ //38
 		cout << "Puertos dinamicos o privados​" << endl;
 	}
 
-    
+
 	auxS1 = c.convert(bytes[byte+4], 0, 7) + c.convert(bytes[byte+5], 0, 7) + c.convert(bytes[byte+6], 0, 7) + c.convert(bytes[byte+7], 0, 7);
 	auxI1 = c.stringbinario_decimal(auxS1);
 	cout << "Numero de Secuencia: " << auxI1 << endl;
-    
+
 	auxS1 = c.convert(bytes[byte+8], 0, 7) + c.convert(bytes[byte+9], 0, 7) + c.convert(bytes[byte+10], 0, 7) + c.convert(bytes[byte+11], 0, 7);
 	auxI1 = c.stringbinario_decimal(auxS1);
 	cout << "Numero de acuse de recibo: " << auxI1 << endl;
 
 	c.imprimir_hexadecimal(byte+11, byte+11, 0, 0, "Longitud de cabecera: ", bytes);
-  
+
 	cout  << endl <<  "Reservado: "<< c.convert(bytes[byte+11], 1, 3) << endl;
 
 	auxS1 = c.convert(bytes[byte+11],0,1);
@@ -872,7 +872,7 @@ void Trama::TCP(int byte){ //38
 	auxI1 = auxS1[0] - '0';
 	auxS2 = (auxI1 == 1) ? "NS -> 1":"NS -> 0 ";
 	cout << auxS2 << "\t";
-    
+
     auxS1 = c.convert(bytes[byte+12],0,7);
     auxI1 = auxS1[0] - '0';
     auxS2 = (auxI1 == 1) ? "CWR -> 1" : "CWR -> 0";
@@ -898,7 +898,7 @@ void Trama::TCP(int byte){ //38
     auxI1 = auxS1[7] - '0';
     auxS2 = (auxI1 == 1) ? "FIN -> 1" : "FIN -> 0";
 	cout << auxS2 << endl;
-	      
+
     cout << "Tamanio de ventana: " << b2todecimal(byte+13) << endl;
     c.imprimir_hexadecimal(byte+15, byte+16, 0, 0, "Suma de verificacion: ", bytes);
 	cout << endl;
@@ -909,7 +909,7 @@ void Trama::TCP(int byte){ //38
 void Trama::UDP(int byte){
 	auxI1 = b2todecimal(byte); //34 y 35
     cout << "Puerto de origen: " << auxI1 << "\t" ;
-    
+
 	if(auxI1 < 1024){
     cout << "Puerto bien conocido. " << endl;
     switch(auxI1){
@@ -964,9 +964,9 @@ void Trama::UDP(int byte){
 		cout << "Puertos registrados​" << endl;
 	}
 	else if (auxI1 > 49152 && auxI1 < 65535){
-		cout << "Puertos dinamicos o privados​" << endl;
+		cout << "Puertos dinamicos o privados" << endl;
 	}
-  
+
 
   auxI1 = b2todecimal(byte+2); // 36 y37
   cout << "Puerto de destino: " << auxI1 << "\t";
@@ -1020,7 +1020,7 @@ void Trama::UDP(int byte){
 			break;
     }
   }
-	
+
 	c.imprimir_hexadecimal(byte+5, byte+6, 0, 0, "Longitud Total: ", bytes);
 	cout << endl;
 
@@ -1030,12 +1030,12 @@ void Trama::UDP(int byte){
 
 void Trama::DNS(int byte, int version){
     cout << "-------DNS-------" << endl;
-    
+
 	//encabezado 12 bytes
 	c.imprimir_hexadecimal(byte, byte + 1, 0, 0, "Indentificador: ", bytes); //16 bits
 	cout << endl;
 	cout << "Flags:" << endl;
-    //QR 
+    //QR
 	auxS1 = c.convert(bytes[byte + 2], 6, 7);
 	auxI1 = auxS1[0] - '0'; //char a entero
 	auxS1 = (auxI1 == 1) ? "QR -> 1: Respuesta":"QR -> 0: Consulta ";
@@ -1079,7 +1079,7 @@ void Trama::DNS(int byte, int version){
 	cout << auxS2 << endl;
 
 	//Zero 3 bits deben ser cero
-	auxS1 = c.convert(bytes[byte + 3], 4, 6); 
+	auxS1 = c.convert(bytes[byte + 3], 4, 6);
 	cout << "Z -> " << auxS1 << endl;
 
     //Rcode 4 bits en decimal
@@ -1095,7 +1095,7 @@ void Trama::DNS(int byte, int version){
 4. No implementado. El tipo solicitado de consulta no está implementado en el servidor de nombres.​
 
 5. Rechazado. El servidor rechaza responder por razones políticas. Los demás valores se reservan para su usuario en el futuro.​
-	*/
+*/
     auxS1 = c.convert(bytes[byte+3], 0, 4);
     auxI1 = c.stringbinario_decimal(auxS1);
 	cout << "Rcode -> ";
@@ -1121,6 +1121,8 @@ void Trama::DNS(int byte, int version){
 	}
 	cout << endl;
 
+	int contador = byte+12;
+/*
 	int preguntas, respuestas;
   auxS1 = c.convert(bytes[byte+4], 0, 7) + c.convert(bytes[byte+5], 0, 7);
   preguntas = c.stringbinario_decimal(auxS1);
@@ -1142,8 +1144,8 @@ void Trama::DNS(int byte, int version){
 
   cout <<endl << "Preguntas: " << endl<<endl;
   int contador = byte+12;
-  int i(0),a,b;	 
-  
+  int i(0),a,b;
+
 	while(i < preguntas){
     a = bytes[contador];
     b = -1;
@@ -1186,7 +1188,7 @@ void Trama::DNS(int byte, int version){
           cout << "23. NS" << endl;
           break;
       }
-        
+
       cout << "Clase: ";
       auxS1 = c.convert(bytes[contador+2], 0, 7) + c.convert(bytes[contador+3], 0, 7);
       auxI1 = c.stringbinario_decimal(auxS1);
@@ -1237,7 +1239,7 @@ void Trama::DNS(int byte, int version){
           cout << "23. NS" << endl;
           break;
       }
-        
+
       cout << "Clase: ";
       auxS1 = c.convert(bytes[contador+2], 0, 7) + c.convert(bytes[contador+3], 0, 7);
       auxI1 = c.stringbinario_decimal(auxS1);
@@ -1324,9 +1326,13 @@ void Trama::DNS(int byte, int version){
         //cout << "23. NS" << endl;
           	break;
       	}
-  	}
+  	}*/
 	cout << endl;
 	imprimirResto(contador);
-	
+
 	cout << endl;
+}
+
+void Trama::limpiarTrama(){
+    this->bytes.clear();
 }
